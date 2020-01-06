@@ -3,7 +3,7 @@ import arcade
 import settings
 
 
-class Chapter1View(arcade.View):
+class Chapter2View(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.BLUE_SAPPHIRE)
     
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     """
     from utils import FakeDirector
     window = arcade.Window(settings.WIDTH, settings.HEIGHT)
-    my_view = Chapter1View()
+    my_view = Chapter2View()
     my_view.director = FakeDirector(close_on_next_view=True)
     window.show_view(my_view)
     arcade.run()
