@@ -52,7 +52,12 @@ class Enemy:
             self.position_x = self.radius
 
         if self.position_x > Width - self.radius:
-            self.position_x = Width - self.radius
+            self.position_y = self.position_y - 50
+            self.change_x = -2
+
+        if self.position_x == self.radius:
+            self.position_y = self.position_y - 50
+            self.change_x = 2
 
         if self.position_y < self.radius:
             self.position_y = self.radius
