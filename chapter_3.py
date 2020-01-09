@@ -5,6 +5,7 @@ import settings
 Width = 600
 Height = 600
 Character_Movement = 4
+Enemy_Movement = 3
 
 class Ball:
     def __init__(self, position_x, position_y, change_x, radius, color):
@@ -30,6 +31,34 @@ class Ball:
 
         if self.position_y < self.radius:
             self.position_y = self.radius
+class Enemy:
+    def __init__(self, position_x, position_y, change_x, change_y, radius, color):
+
+        self.position_x = position_x
+        self.position_y = position_y
+        self.change_x = change_x
+        self.change_y = change_y
+        self.radius = radius
+        self.color = color
+
+    def draw(self):
+        arcade.draw_circle_filled(self.position_x, self.position_y, self.radius, self.color)
+
+    def update(self):
+        self.position_x += self.change_x
+
+        # See if the ball hit the edge of the screen. If so, change direction
+        if self.position_x < self.radius:
+            self.position_x = self.radius
+
+        if self.position_x > Width - self.radius:
+            self.position_x = Width - self.radius
+
+        if self.position_y < self.radius:
+            self.position_y = self.radius
+
+        if self.position_y > Height:
+            self.position_y = Height - self.radius
 
 class MyGame(arcade.Window):
 
@@ -43,15 +72,18 @@ class MyGame(arcade.Window):
         self.set_mouse_visible(False)
 
         # Create our ball
-        self.ball = Ball(50, 50, 0, 15, arcade.color.WHITE)
+        self.ball = Ball(300, 50, 0, 15, arcade.color.WHITE)
+        self.enemy = Enemy(50,550,2, 2, 15, arcade.color.RED)
 
     def on_draw(self):
         """ Called whenever we need to draw the window. """
         arcade.start_render()
         self.ball.draw()
+        self.enemy.draw()
 
     def on_update(self, delta_time):
         self.ball.update()
+        self.enemy.update()
 
     def on_key_press(self, key, modifiers):
         """ Called whenever the user presses a key. """
@@ -64,7 +96,6 @@ class MyGame(arcade.Window):
         """ Called whenever a user releases a key. """
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.ball.change_x = 0
-
 
 def main():
     MyGame(Width, Height)
@@ -80,8 +111,6 @@ class Chapter3View(arcade.View,):
 
     def on_draw(self):
         arcade.start_render()
-
-
 
     def on_key_press(self, key, modifiers):
         self.director.next_view()
