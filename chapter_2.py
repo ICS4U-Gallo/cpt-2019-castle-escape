@@ -2,15 +2,29 @@ import arcade
 
 import settings
 
+class Ball:
+
+    def __init__(self, position_x, position_y, radius, color):
+        self.position_x = position_x
+        self.position_y = position_y
+        self.radius = radius
+        self.color = color
+
+    def draw(self):
+        arcade.draw_circle_filled(self.position_x, self.position_y, self.radius, self.color)
+
 
 class Chapter2View(arcade.View):
-    def on_show(self):
-        arcade.set_background_color(arcade.color.BLUE_SAPPHIRE)
-    
+
+    def __init__(self):
+
+        super().__init__()
+
+        self.ball = Ball(50, 50, 15, arcade.color.AUBURN)
+
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("Chapter 2", settings.WIDTH/2, settings.HEIGHT/2,
-                         arcade.color.BLACK, font_size=30, anchor_x="center")
+        self.ball.draw()
     
     def on_key_press(self, key, modifiers):
         self.director.next_view()
