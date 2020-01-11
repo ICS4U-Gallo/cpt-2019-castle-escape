@@ -13,8 +13,8 @@ class MenuView(arcade.View):
                          arcade.color.BLACK, font_size=30, anchor_x="center")
 
     def on_key_press(self, key, modifiers):
-        self.director.next_view()
-
+        if key == arcade.key.ENTER:
+            self.director.next_view()
 
 if __name__ == "__main__":
     """This section of code will allow you to run your View

@@ -27,7 +27,8 @@ class Chapter2View(arcade.View):
         self.ball.draw()
     
     def on_key_press(self, key, modifiers):
-        self.director.next_view()
+        if key == arcade.key.ENTER:
+            self.director.next_view()
 
 
 if __name__ == "__main__":

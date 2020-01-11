@@ -125,8 +125,8 @@ class Chapter3View(arcade.View,):
         arcade.start_render()
 
     def on_key_press(self, key, modifiers):
-        self.director.next_view()
-
+        if key == arcade.key.ENTER:
+            self.director.next_view()
 
 if __name__ == "__main__":
     """This section of code will allow you to run your View
