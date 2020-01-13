@@ -1,34 +1,77 @@
 import arcade
-
 import settings
+import os
 
-class Ball:
 
-    def __init__(self, position_x, position_y, radius, color):
+main_player = arcade.load_texture("pics\maleAdventurer_idle.png")
+
+
+class Player():
+
+    def __init__(self, position_x, position_y, change_x, change_y, width, height, texture, angle):
         self.position_x = position_x
         self.position_y = position_y
-        self.radius = radius
-        self.color = color
+        self.change_x = change_x
+        self.change_y = change_y
+        self.width = width
+        self.height = height
+        self.texture = texture
+        self.angle = angle
 
     def draw(self):
-        arcade.draw_circle_filled(self.position_x, self.position_y, self.radius, self.color)
+        arcade.draw_texture_rectangle(self.position_x, self.position_y, self.width, self.height, self.texture, self.angle)
+
+    def update(self):
+        self.position_x += self.change_x
+        self.position_y += self.change_y
+
+        if self.position_x < self.width:
+            self.position_x = self.width
+        if self.position_x > settings.WIDTH - self.width:
+            self.position_x = settings.width - self.width
+
+        if self.position_y < self.width:
+            self.position_y = self.width
+        if self.position_y > settings.HEIGHT - self.width:
+            self.position_y = settings.HEIGHT - self.width
 
 
 class Chapter2View(arcade.View):
 
     def __init__(self):
-
         super().__init__()
 
-        self.ball = Ball(50, 50, 15, arcade.color.AUBURN)
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
 
+        arcade.set_background_color(arcade.color.GRAY_BLUE)
+
+        self.main_player = Player(400, 100, 0, 0, .5 * main_player.width, .5 * main_player.height, main_player, 0)
+    
     def on_draw(self):
         arcade.start_render()
-        self.ball.draw()
-    
+        self.main_player.draw()
+
+    def on_update(self, delta_time):
+        self.main_player.update()
+
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ENTER:
             self.director.next_view()
+        elif key == arcade.key.LEFT:
+            self.main_player.change_x = -3
+        elif key == arcade.key.RIGHT:
+            self.main_player.change_x = 3
+        elif key == arcade.key.UP:
+            self.main_player.change_y = 3
+        elif key == arcade.key.DOWN:
+            self.main_player.change_y = -3
+
+    def on_key_release(self, key, modifiers):
+        if key == arcade.key.LEFT or arcade.key.RIGHT:
+            self.main_player.change_x = 0
+        if key == arcade.key.UP or arcade.key.DOWN:
+            self.main_player.change_y = 0
 
 
 if __name__ == "__main__":
