@@ -2,38 +2,24 @@ import arcade
 import settings
 import os
 
+movement_speed = 5
 
-main_player = arcade.load_texture("pics\maleAdventurer_idle.png")
 
-
-class Player():
-
-    def __init__(self, position_x, position_y, change_x, change_y, width, height, texture, angle):
-        self.position_x = position_x
-        self.position_y = position_y
-        self.change_x = change_x
-        self.change_y = change_y
-        self.width = width
-        self.height = height
-        self.texture = texture
-        self.angle = angle
-
-    def draw(self):
-        arcade.draw_texture_rectangle(self.position_x, self.position_y, self.width, self.height, self.texture, self.angle)
+class Player(arcade.Sprite):
 
     def update(self):
-        self.position_x += self.change_x
-        self.position_y += self.change_y
+        self.center_x += self.change_x
+        self.center_y += self.change_y
 
-        if self.position_x < self.width:
-            self.position_x = self.width
-        if self.position_x > settings.WIDTH - self.width:
-            self.position_x = settings.width - self.width
+        if self.left < 0:
+            self.left = 0
+        elif self.right > settings.WIDTH - 1:
+            self.right = settings.WIDTH - 1
 
-        if self.position_y < self.width:
-            self.position_y = self.width
-        if self.position_y > settings.HEIGHT - self.width:
-            self.position_y = settings.HEIGHT - self.width
+        if self.bottom < 0:
+            self.bottom = 0
+        elif self.top > settings.HEIGHT - 1:
+            self.top = settings.HEIGHT - 1
 
 
 class Chapter2View(arcade.View):
@@ -44,34 +30,66 @@ class Chapter2View(arcade.View):
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
 
+        self.player_list = None
+        self.main_player = None
+
+        self.left_pressed = False
+        self.right_pressed = False
+        self.up_pressed = False
+        self.down_pressed = False
+
         arcade.set_background_color(arcade.color.GRAY_BLUE)
 
-        self.main_player = Player(400, 100, 0, 0, .5 * main_player.width, .5 * main_player.height, main_player, 0)
+    def setup(self):
+        self.player_list = arcade.SpriteList()
+
+        self.main_player = Player("pics/maleAdventurer_idle.png")
+        self.main_player.center_x = 50
+        self.main_player.center_y = 50
+        self.player_list.append(self.main_player)
     
     def on_draw(self):
         arcade.start_render()
-        self.main_player.draw()
-
+        self.player_list.draw()
+                 
     def on_update(self, delta_time):
-        self.main_player.update()
+        self.main_player.change_x = 0
+        self.main_player.change_y = 0
 
+        if self.up_pressed and not self.down_pressed:
+            self.main_player.change_y = movement_speed
+        elif self.down_pressed and not self.up_pressed:
+            self.main_player.change_y = -movement_speed
+        
+        if self.left_pressed and not self.right_pressed:
+            self.main_player.change_x = -movement_speed
+        elif self.right_pressed and not self.left_pressed:
+            self.main_player.change_x = movement_speed
+
+        self.player_list.update()
+    
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ENTER:
             self.director.next_view()
-        elif key == arcade.key.LEFT:
-            self.main_player.change_x = -3
-        elif key == arcade.key.RIGHT:
-            self.main_player.change_x = 3
         elif key == arcade.key.UP:
-            self.main_player.change_y = 3
+            self.up_pressed = True
         elif key == arcade.key.DOWN:
-            self.main_player.change_y = -3
+            self.down_pressed = True
+        elif key == arcade.key.LEFT:
+            self.left_pressed = True
+        elif key == arcade.key.RIGHT:
+            self.right_pressed = True
 
     def on_key_release(self, key, modifiers):
-        if key == arcade.key.LEFT or arcade.key.RIGHT:
-            self.main_player.change_x = 0
-        if key == arcade.key.UP or arcade.key.DOWN:
-            self.main_player.change_y = 0
+        
+        if key == arcade.key.UP:
+            self.up_pressed = False
+        elif key == arcade.key.DOWN:
+            self.down_pressed = False
+        elif key == arcade.key.LEFT:
+            self.left_pressed = False
+        elif key == arcade.key.RIGHT:
+            self.right_pressed = False
 
 
 if __name__ == "__main__":
@@ -89,4 +107,5 @@ if __name__ == "__main__":
     my_view = Chapter2View()
     my_view.director = FakeDirector(close_on_next_view=True)
     window.show_view(my_view)
+    my_view.setup()
     arcade.run()
