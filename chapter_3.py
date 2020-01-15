@@ -70,12 +70,13 @@ class Chapter3View(arcade.View,):
         super().__init__()
 
 
-        self.ball = Ball(300, 50, 0, 15, arcade.color.WHITE)
-        self.enemy = Enemy(100,550,4, 2, 15, arcade.color.RED)
-        self.enemy2 = Enemy(220,550,4,2,15, arcade.color.RED)
-        self.enemy3 = Enemy(340, 550, 4, 2, 15, arcade.color.RED)
-        self.enemy4 = Enemy(460, 550, 4, 2, 15, arcade.color.RED)
-        self.enemy5 = Enemy(580, 550, 4, 2, 15, arcade.color.RED)
+        self.ball = Ball(400, 50, 0, 15, arcade.color.WHITE)
+        self.enemy = Enemy(80,550,4, 2, 15, arcade.color.RED)
+        self.enemy2 = Enemy(240,550,4,2,15, arcade.color.RED)
+        self.enemy3 = Enemy(400, 550, 4, 2, 15, arcade.color.RED)
+        self.enemy4 = Enemy(560, 550, 4, 2, 15, arcade.color.RED)
+        self.enemy5 = Enemy(720, 550, 4, 2, 15, arcade.color.RED)
+
 
     def on_show(self):
         arcade.set_background_color(arcade.color.BLACK)
