@@ -5,7 +5,8 @@ import settings
 Width = 600
 Height = 600
 Character_Movement = 4
-
+Speed = 12
+Arrow_state = "ready"
 class Ball:
     def __init__(self, position_x, position_y, change_x, radius, color):
 
@@ -63,6 +64,23 @@ class Enemy:
         if self.position_y > settings.HEIGHT:
             self.position_y = settings.HEIGHT - self.radius
 
+class Arrow:
+
+    def __init__(self, position_x, position_y, change_y, radius, color):
+
+        self.position_x = position_x
+        self.position_y = position_y
+        self.change_y = change_y
+        self.radius = radius
+        self.color = color
+
+    def draw(self):
+        arcade.draw_circle_filled(self.position_x, self.position_y, self.radius, self.color)
+
+    def update(self):
+
+        self.position_y += self.change_y
+
 class Chapter3View(arcade.View,):
 
     def __init__(self):
@@ -76,10 +94,11 @@ class Chapter3View(arcade.View,):
         self.enemy3 = Enemy(400, 550, 4, 2, 15, arcade.color.RED)
         self.enemy4 = Enemy(560, 550, 4, 2, 15, arcade.color.RED)
         self.enemy5 = Enemy(720, 550, 4, 2, 15, arcade.color.RED)
+        self.arrow = Arrow(400,50,0,5,arcade.color.BLUE)
 
 
     def on_show(self):
-        arcade.set_background_color(arcade.color.BLACK)
+        arcade.set_background_color(arcade.color.LIGHT_GREEN)
 
     def on_draw(self):
         arcade.start_render()
@@ -89,22 +108,40 @@ class Chapter3View(arcade.View,):
         self.enemy3.draw()
         self.enemy4.draw()
         self.enemy5.draw()
+        self.arrow.draw()
 
     def on_update(self, delta_time):
+        global Arrow_state
+
+        if self.arrow.position_y > settings.HEIGHT:
+            self.arrow.position_y = self.ball.position_y
+            self.arrow.position_x = self.ball.position_x
+            self.arrow.change_y = 0
+            Arrow_state = "ready"
+
         self.ball.update()
         self.enemy.update()
         self.enemy2.update()
         self.enemy3.update()
         self.enemy4.update()
         self.enemy5.update()
+        self.arrow.update()
 
     def on_key_press(self, key, modifiers):
+        global Arrow_state
         if key == arcade.key.ENTER:
             self.director.next_view()
         if key == arcade.key.LEFT:
             self.ball.change_x = -Character_Movement
         elif key == arcade.key.RIGHT:
             self.ball.change_x = Character_Movement
+        if key == arcade.key.SPACE:
+            if Arrow_state == "ready":
+                Arrow_state = "release"
+                self.arrow.position_y = self.ball.position_y
+                self.arrow.position_x = self.ball.position_x
+                self.arrow.change_y = Speed
+
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
