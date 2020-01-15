@@ -21,12 +21,11 @@ class Ball:
     def update(self):
         self.position_x += self.change_x
 
-        # See if the ball hit the edge of the screen. If so, change direction
         if self.position_x < self.radius:
             self.position_x = self.radius
 
-        if self.position_x > Width - self.radius:
-            self.position_x = Width - self.radius
+        if self.position_x > settings.WIDTH - self.radius:
+            self.position_x = settings.WIDTH - self.radius
 
         if self.position_y < self.radius:
             self.position_y = self.radius
@@ -50,7 +49,7 @@ class Enemy:
         if self.position_x < self.radius:
             self.position_x = self.radius
 
-        if self.position_x > Width - self.radius:
+        if self.position_x > settings.WIDTH - self.radius:
             self.position_y = self.position_y - 50
             self.change_x = self.change_x*-1
 
@@ -61,16 +60,15 @@ class Enemy:
         if self.position_y < self.radius:
             self.position_y = self.radius
 
-        if self.position_y > Height:
-            self.position_y = Height - self.radius
+        if self.position_y > settings.HEIGHT:
+            self.position_y = settings.HEIGHT - self.radius
 
-class MyGame(arcade.Window):
+class Chapter3View(arcade.View,):
 
-    def __init__(self, width, height):
+    def __init__(self):
 
-        super().__init__(width, height)
+        super().__init__()
 
-        self.set_mouse_visible(False)
 
         self.ball = Ball(300, 50, 0, 15, arcade.color.WHITE)
         self.enemy = Enemy(100,550,4, 2, 15, arcade.color.RED)
@@ -79,8 +77,10 @@ class MyGame(arcade.Window):
         self.enemy4 = Enemy(460, 550, 4, 2, 15, arcade.color.RED)
         self.enemy5 = Enemy(580, 550, 4, 2, 15, arcade.color.RED)
 
+    def on_show(self):
+        arcade.set_background_color(arcade.color.BLACK)
+
     def on_draw(self):
-        """ Called whenever we need to draw the window. """
         arcade.start_render()
         self.ball.draw()
         self.enemy.draw()
@@ -98,35 +98,16 @@ class MyGame(arcade.Window):
         self.enemy5.update()
 
     def on_key_press(self, key, modifiers):
-        """ Called whenever the user presses a key. """
+        if key == arcade.key.ENTER:
+            self.director.next_view()
         if key == arcade.key.LEFT:
             self.ball.change_x = -Character_Movement
         elif key == arcade.key.RIGHT:
             self.ball.change_x = Character_Movement
 
     def on_key_release(self, key, modifiers):
-        """ Called whenever a user releases a key. """
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.ball.change_x = 0
-
-def main():
-    MyGame(Width, Height)
-    arcade.run()
-
-if __name__ == "__main__":
-    main()
-
-
-class Chapter3View(arcade.View,):
-    def on_show(self):
-        arcade.set_background_color(arcade.color.BLACK)
-
-    def on_draw(self):
-        arcade.start_render()
-
-    def on_key_press(self, key, modifiers):
-        if key == arcade.key.ENTER:
-            self.director.next_view()
 
 if __name__ == "__main__":
     """This section of code will allow you to run your View
