@@ -10,20 +10,21 @@ movement_speed = 5
 
 class Level:
     def __init__(self):
-        self.wall_list = None
-        self.character_list = None
+        self.wall_list = arcade.SpriteList()
+        self.character_list = arcade.SpriteList()
         #self.background = None
 
 
 def setup_level_1():
     level = Level()
-    level.wall_list = arcade.SpriteList()
-    level.character_list = arcade.SpriteList()
 
     wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", wall_scaling)
     wall.left = 7 * wall_size
     wall.bottom = 5 * wall_size
     level.wall_list.append(wall)
+
+    create_and_add_vertical_walls_to_list(3, 13, 24, level.wall_list)
+    create_and_add_horiontal_walls_to_list(5, 200, 50, level.wall_list)
 
     prison_guard = arcade.Sprite("pics\prison_guard.png", character_scale)
     prison_guard.center_x = 400
@@ -34,14 +35,41 @@ def setup_level_1():
 
 def setup_level_2():
     level = Level()
-    level.wall_list = arcade.SpriteList()
-    level.character_list = arcade.SpriteList()
 
     wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",wall_scaling)
     wall.left = 15 * wall_size
     wall.bottom = 20 * wall_size
     level.wall_list.append(wall)
+
+    create_and_add_vertical_walls_to_list(3, 13, 24, level.wall_list)
+    create_and_add_horiontal_walls_to_list(5, 200, 50, level.wall_list)
+
     return level
+
+def setup_level_3():
+    level = Level()
+
+    wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", wall_scaling)
+    wall.left = 7 * wall_size
+    wall.bottom = 5 * wall_size
+    level.wall_list.append(wall)
+
+    return level
+
+
+def create_and_add_vertical_walls_to_list(column_start: int, column_end: int, x: int, wall_list: arcade.SpriteList):
+    for y in range(column_start * wall_size, column_end * wall_size, wall_size):
+        wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", wall_scaling)
+        wall.left = x * wall_size
+        wall.bottom = y
+        wall_list.append(wall)
+
+def create_and_add_horiontal_walls_to_list(row_start: int, row_end: int, y: int, wall_list: arcade.SpriteList):
+    for x in range(row_start * wall_size, row_end * wall_size, wall_size):
+        wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", wall_scaling)
+        wall.left = x
+        wall.bottom = y * wall_size
+        wall_list.append(wall)
 
 
 class CharacterDialogue:
@@ -84,7 +112,8 @@ class Chapter2View(arcade.View):
 
         self.levels = [
             setup_level_1(),
-            setup_level_2()
+            setup_level_2(),
+            setup_level_3()
         ]
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.levels[self.current_level].wall_list)
@@ -99,9 +128,7 @@ class Chapter2View(arcade.View):
         self.levels[self.current_level].wall_list.draw()
 
     def on_key_press(self, key, modifiers):
-        if key ==arcade.key.ENTER:
-            self.director.next_view()
-        elif key == arcade.key.UP:
+        if key == arcade.key.UP:
             self.player_sprite.change_y = movement_speed
         elif key == arcade.key.DOWN:
             self.player_sprite.change_y = -movement_speed
@@ -128,8 +155,23 @@ class Chapter2View(arcade.View):
         elif self.player_sprite.center_y < 0 and self.current_level == 1:
             self.current_level = 0
             self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                             self.levels[self.current_level].wall_list)
+                                                        self.levels[self.current_level].wall_list)
             self.player_sprite.center_y = settings.HEIGHT
+
+        elif self.player_sprite.center_y > settings.HEIGHT and self.current_level == 1:
+            self.current_level = 2
+            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
+                                                        self.levels[self.current_level].wall_list)
+            self.player_sprite.center_y = 0
+        elif self.player_sprite.center_y < 0 and self.current_level == 2:
+            self.current_level = 1
+            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
+                                                        self.levels[self.current_level].wall_list)
+            self.player_sprite.center_y = settings.HEIGHT
+
+        elif self.player_sprite.center_y > settings.HEIGHT and self.current_level == 2:
+            self.director.next_view()
+
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
