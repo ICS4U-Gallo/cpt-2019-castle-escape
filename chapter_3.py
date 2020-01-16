@@ -4,9 +4,10 @@ import settings
 
 Width = 600
 Height = 600
-Character_Movement = 4
-Speed = 12
+Character_Movement = 8
+Speed = 20
 Arrow_state = "ready"
+
 class Ball:
     def __init__(self, position_x, position_y, change_x, radius, color):
 
@@ -51,11 +52,11 @@ class Enemy:
             self.position_x = self.radius
 
         if self.position_x > settings.WIDTH - self.radius:
-            self.position_y = self.position_y - 50
+            self.position_y = self.position_y - 40
             self.change_x = self.change_x*-1
 
         if self.position_x == self.radius:
-            self.position_y = self.position_y - 50
+            self.position_y = self.position_y - 40
             self.change_x = self.change_x*-1
 
         if self.position_y < self.radius:
@@ -88,17 +89,28 @@ class Chapter3View(arcade.View,):
         super().__init__()
 
 
-        self.ball = Ball(400, 50, 0, 15, arcade.color.WHITE)
-        self.enemy = Enemy(80,550,4, 2, 15, arcade.color.RED)
-        self.enemy2 = Enemy(240,550,4,2,15, arcade.color.RED)
-        self.enemy3 = Enemy(400, 550, 4, 2, 15, arcade.color.RED)
-        self.enemy4 = Enemy(560, 550, 4, 2, 15, arcade.color.RED)
-        self.enemy5 = Enemy(720, 550, 4, 2, 15, arcade.color.RED)
-        self.arrow = Arrow(400,50,0,5,arcade.color.BLUE)
+        self.ball = Ball(400, 50, 0, 15, arcade.color.CHAMOISEE)
+        self.enemy = Enemy(50,550,8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy2 = Enemy(150,550,8,2,15, arcade.color.CADET_GREY)
+        self.enemy3 = Enemy(250, 550, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy4 = Enemy(350, 550, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy5 = Enemy(450, 550, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy6 = Enemy(550, 550, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy7 = Enemy(650, 550, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy8 = Enemy(750, 550, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy9 = Enemy(50, 475, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy10 = Enemy(150, 475, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy11 = Enemy(250, 475, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy12 = Enemy(350, 475, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy13 = Enemy(450, 475, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy14 = Enemy(550, 475, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy15 = Enemy(650, 475, 8, 2, 15, arcade.color.CADET_GREY)
+        self.enemy16 = Enemy(750, 475, 8, 2, 15, arcade.color.CADET_GREY)
+        self.arrow = Arrow(400,50,0,5,arcade.color.BROWN_NOSE)
 
 
     def on_show(self):
-        arcade.set_background_color(arcade.color.LIGHT_GREEN)
+        arcade.set_background_color(arcade.color.YELLOW_GREEN)
 
     def on_draw(self):
         arcade.start_render()
@@ -108,6 +120,17 @@ class Chapter3View(arcade.View,):
         self.enemy3.draw()
         self.enemy4.draw()
         self.enemy5.draw()
+        self.enemy6.draw()
+        self.enemy7.draw()
+        self.enemy8.draw()
+        self.enemy9.draw()
+        self.enemy10.draw()
+        self.enemy11.draw()
+        self.enemy12.draw()
+        self.enemy13.draw()
+        self.enemy14.draw()
+        self.enemy15.draw()
+        self.enemy16.draw()
         self.arrow.draw()
 
     def on_update(self, delta_time):
@@ -125,6 +148,17 @@ class Chapter3View(arcade.View,):
         self.enemy3.update()
         self.enemy4.update()
         self.enemy5.update()
+        self.enemy6.update()
+        self.enemy7.update()
+        self.enemy8.update()
+        self.enemy9.update()
+        self.enemy10.update()
+        self.enemy11.update()
+        self.enemy12.update()
+        self.enemy13.update()
+        self.enemy14.update()
+        self.enemy15.update()
+        self.enemy16.update()
         self.arrow.update()
 
     def on_key_press(self, key, modifiers):
