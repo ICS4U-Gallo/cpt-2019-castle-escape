@@ -11,28 +11,38 @@ movement_speed = 5
 class Level:
     def __init__(self):
         self.wall_list = None
+        self.character_list = None
         #self.background = None
+
 
 def setup_level_1():
     level = Level()
     level.wall_list = arcade.SpriteList()
+    level.character_list = arcade.SpriteList()
 
     wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", wall_scaling)
     wall.left = 7 * wall_size
     wall.bottom = 5 * wall_size
     level.wall_list.append(wall)
+
+    prison_guard = arcade.Sprite("pics\prison_guard.png", character_scale)
+    prison_guard.center_x = 400
+    prison_guard.center_y = 300
+    level.character_list.append(prison_guard)
+
     return level
 
-class Character:
-    def __init__(self, position_x: int, position_y: int, width: int, height: int, texture):
-        self.position_x = position_x
-        self.position_y = position_y
-        self.width = width
-        self.height = height
-        self.texture = texture
+def setup_level_2():
+    level = Level()
+    level.wall_list = arcade.SpriteList()
+    level.character_list = arcade.SpriteList()
 
-    def draw(self):
-        arcade.draw_texture_rectangle(self.position_x, self.position_y, character_scale * self.width, character_scale * self.height, self.texture)
+    wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",wall_scaling)
+    wall.left = 15 * wall_size
+    wall.bottom = 20 * wall_size
+    level.wall_list.append(wall)
+    return level
+
 
 class CharacterDialogue:
     def __init__(self, center_x, center_y, width, height, text, font_size=18,
@@ -72,23 +82,19 @@ class Chapter2View(arcade.View):
         self.player_list = arcade.SpriteList()
         self.player_list.append(self.player_sprite)
 
-        self.levels = []
-
-        level = setup_level_1()
-        self.levels.append(level)
+        self.levels = [
+            setup_level_1(),
+            setup_level_2()
+        ]
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.levels[self.current_level].wall_list)
 
         arcade.set_background_color(arcade.color.AMAZON)
-
-        # Characters
-        prison_guard = arcade.load_texture("pics\prison_guard.png")
-        self.prison_guard = Character(500, 200, prison_guard.width, prison_guard.height, prison_guard)
+        
 
     def on_draw(self):
-
         arcade.start_render()
-        self.prison_guard.draw()
+        self.levels[self.current_level].character_list.draw()
         self.player_list.draw()
         self.levels[self.current_level].wall_list.draw()
 
@@ -105,9 +111,6 @@ class Chapter2View(arcade.View):
             self.player_sprite.change_x = movement_speed
 
     def on_key_release(self, key, modifiers):
-        """
-        Called whenever the user lets off a previously pressed key.
-        """
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player_sprite.change_y = 0
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
@@ -117,18 +120,16 @@ class Chapter2View(arcade.View):
 
         self.physics_engine.update()
 
-    '''
-        if self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 0:
-            self.current_room = 1
+        if self.player_sprite.center_y > settings.HEIGHT and self.current_level == 0:  
+            self.current_level = 1
             self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                             self.rooms[self.current_room].wall_list)
-            self.player_sprite.center_x = 0
-        elif self.player_sprite.center_x < 0 and self.current_room == 1:
-            self.current_room = 0
+                                                        self.levels[self.current_level].wall_list)
+            self.player_sprite.center_y = 0
+        elif self.player_sprite.center_y < 0 and self.current_level == 1:
+            self.current_level = 0
             self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                             self.rooms[self.current_room].wall_list)
-            self.player_sprite.center_x = SCREEN_WIDTH
-    '''
+                                                             self.levels[self.current_level].wall_list)
+            self.player_sprite.center_y = settings.HEIGHT
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
