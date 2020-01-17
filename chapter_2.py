@@ -2,16 +2,31 @@ import arcade
 import settings
 import os
 
-character_scale = 0.5
+sprite_scale = 0.5
 wall_scaling = 0.1
 wall_size = 10
 
 movement_speed = 5
-
+'''
+class Dialogue:
+    def __init__(self, center_x, center_y, width, height, text, font_size=18,
+                 font_face="Arial", face_color=arcade.color.LIGHT_GRAY):
+        self.center_x = center_x
+        self.center_y = center_y
+        self.width = width
+        self.height = height
+        self.text = text
+        self.font_size = font_size
+        self.font_face = font_face
+        self.pressed = False
+        self.face_color = face_color
+'''
 class Level:
     def __init__(self):
         self.wall_list = arcade.SpriteList()
         self.character_list = arcade.SpriteList()
+        self.item_list = arcade.SpriteList()
+        #self.dialogue_list = []
         #self.background = None
 
 
@@ -26,10 +41,19 @@ def setup_level_1():
     create_and_add_vertical_walls_to_list(3, 13, 24, level.wall_list)
     create_and_add_horiontal_walls_to_list(5, 200, 50, level.wall_list)
 
-    prison_guard = arcade.Sprite("pics\prison_guard.png", character_scale)
-    prison_guard.center_x = 400
+    prison_guard = arcade.Sprite("pics\prison_guard.png", sprite_scale)
+    prison_guard.center_x = 200
     prison_guard.center_y = 300
     level.character_list.append(prison_guard)
+
+    money = Item("pics\gold_1.png", 0.5)
+    money.center_x = 400
+    money.center_y = 25
+    level.item_list.append(money)
+
+    #conversation = Dialogue(200, 300, 10, 5, "Hi.")
+    #level.dialogue_list.append(conversation)
+
 
     return level
 
@@ -72,22 +96,8 @@ def create_and_add_horiontal_walls_to_list(row_start: int, row_end: int, y: int,
         wall_list.append(wall)
 
 
-class CharacterDialogue:
-    def __init__(self, center_x, center_y, width, height, text, font_size=18,
-                 font_face="Arial", face_color=arcade.color.LIGHT_GRAY, highlight_color=arcade.color.WHITE,
-                  shadow_color=arcade.color.GRAY, button_height=2):
-        self.center_x = center_x
-        self.center_y = center_y
-        self.width = width
-        self.height = height
-        self.text = text
-        self.font_size = font_size
-        self.font_face = font_face
-        self.pressed = False
-        self.face_color = face_color
-        self.highlight_color = highlight_color
-        self.shadow_color = shadow_color
-        self.button_height = button_height
+class Item(arcade.Sprite):
+    pass
 
 class Chapter2View(arcade.View):
 
@@ -98,11 +108,8 @@ class Chapter2View(arcade.View):
         os.chdir(file_path)
 
         self.current_level = 0
-
-        self.levels = None
-        self.player_sprite = None
-        self.player_list = None
-        self.physics_engine = None
+        self.inventory = 0
+        
 
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", 0.5)
         self.player_sprite.center_x = 100
@@ -123,9 +130,10 @@ class Chapter2View(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        self.levels[self.current_level].character_list.draw()
-        self.player_list.draw()
         self.levels[self.current_level].wall_list.draw()
+        self.levels[self.current_level].character_list.draw()
+        self.levels[self.current_level].item_list.draw()
+        self.player_list.draw()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
@@ -145,33 +153,40 @@ class Chapter2View(arcade.View):
 
     def on_update(self, delta_time):
 
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.levels[self.current_level].item_list)
+        for item in hit_list:
+            item.remove_from_sprite_lists()
+            self.inventory += 1
+
         self.physics_engine.update()
 
-        if self.player_sprite.center_y > settings.HEIGHT and self.current_level == 0:  
+        #go up
+        if self.player_sprite.center_y > settings.HEIGHT and self.current_level == 0 and self.inventory == 1:  
             self.current_level = 1
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                        self.levels[self.current_level].wall_list)
+            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.levels[self.current_level].wall_list)
             self.player_sprite.center_y = 0
-        elif self.player_sprite.center_y < 0 and self.current_level == 1:
-            self.current_level = 0
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                        self.levels[self.current_level].wall_list)
+        elif self.player_sprite.center_y > settings.HEIGHT and self.current_level == 0 and self.inventory == 0:  
             self.player_sprite.center_y = settings.HEIGHT
 
         elif self.player_sprite.center_y > settings.HEIGHT and self.current_level == 1:
             self.current_level = 2
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                        self.levels[self.current_level].wall_list)
+            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.levels[self.current_level].wall_list)
             self.player_sprite.center_y = 0
+
+        #go down
+        elif self.player_sprite.center_y < 0 and self.current_level == 1:
+            self.current_level = 0
+            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.levels[self.current_level].wall_list)
+            self.player_sprite.center_y = settings.HEIGHT
         elif self.player_sprite.center_y < 0 and self.current_level == 2:
             self.current_level = 1
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                        self.levels[self.current_level].wall_list)
+            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.levels[self.current_level].wall_list)
             self.player_sprite.center_y = settings.HEIGHT
 
+        #next view
         elif self.player_sprite.center_y > settings.HEIGHT and self.current_level == 2:
             self.director.next_view()
-
+            #error in sys.excepthook when manually going to next view???
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
