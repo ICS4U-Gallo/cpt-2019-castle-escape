@@ -1,20 +1,13 @@
 import arcade
-import math
 import settings
 
-Width = 600
-Height = 600
 Character_Movement = 8
 Speed = 20
+Character_Scaling = 1
+Frames_Second = 7
+Right = 0
+Left = 1
 Arrow_state = "ready"
-
-
-def collision(c1, c2):
-    distance = math.sqrt(math.pow(c1.position_x - c2.position_x(), 2) + math.pow(c1.position_y - position_y, 2))
-    if distance < 10:
-        return True
-    else:
-        return False
 
 class Ball:
     def __init__(self, position_x, position_y, change_x, radius, color):
@@ -115,7 +108,6 @@ class Chapter3View(arcade.View,):
         self.enemy15 = Enemy(650, 475, 8, 2, 15, arcade.color.CADET_GREY)
         self.enemy16 = Enemy(750, 475, 8, 2, 15, arcade.color.CADET_GREY)
         self.arrow = Arrow(400,50,0,5,arcade.color.BROWN_NOSE)
-
 
     def on_show(self):
         arcade.set_background_color(arcade.color.YELLOW_GREEN)
