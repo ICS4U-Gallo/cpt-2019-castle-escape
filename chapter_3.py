@@ -1,5 +1,5 @@
 import arcade
-
+import math
 import settings
 
 Width = 600
@@ -7,6 +7,14 @@ Height = 600
 Character_Movement = 8
 Speed = 20
 Arrow_state = "ready"
+
+
+def collision(c1, c2):
+    distance = math.sqrt(math.pow(c1.position_x - c2.position_x(), 2) + math.pow(c1.position_y - position_y, 2))
+    if distance < 10:
+        return True
+    else:
+        return False
 
 class Ball:
     def __init__(self, position_x, position_y, change_x, radius, color):
