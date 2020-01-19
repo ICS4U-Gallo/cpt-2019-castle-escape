@@ -1,13 +1,4 @@
-"""
-Move with a Sprite Animation
 
-Simple program to show basic sprite usage.
-
-Artwork from http://kenney.nl
-
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_move_animation
-"""
 import arcade
 import os
 
