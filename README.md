@@ -1,9 +1,11 @@
-# Program Title (replace)
-Program description. Replace with description of your program. Give a description of each scene.
+# Castle Escape
+View 1: The character wakes up in a dungeon cell. There's a pile of unconscious bodies, and a mystery to solve... Pick up items to advance past checkpoints and try to solve the story while you're at it.
+
+View 2: This brings us to the battle: rebels. vs knights! Shoot the knights with arrows before they get to you.
 
 ### Group Members:
-- Member1
-- Member2
+- Mehana
+- Sydney
 
 
 # CPT 2019
