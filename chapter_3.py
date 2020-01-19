@@ -50,6 +50,14 @@ prison_guard8.center_y = 475
 prison_guard8.change_x = 3
 prison_guard8.scale = 0.3
 
+arrow = arcade.Sprite("pics\darrow.png",)
+arrow.center_x = 400
+arrow.center_y = -50
+arrow.change_y = 0
+arrow.angle = 225
+arrow.scale = .1
+arrowstate = "ready"
+
 class Chapter3View(arcade.View):
     def __init__(self):
         super().__init__()
@@ -74,6 +82,8 @@ class Chapter3View(arcade.View):
         self.player_list.append(prison_guard7)
         self.player_list.append(prison_guard8)
 
+        self.player_list.append(arrow)
+
 
     def on_show(self):
         arcade.set_background_color(arcade.color.AMAZON)
@@ -83,6 +93,7 @@ class Chapter3View(arcade.View):
         self.player_list.draw()
 
     def on_update(self, delta_time):
+        global arrowstate
 
         self.player_sprite.center_x += self.player_sprite.change_x
 
@@ -175,14 +186,31 @@ class Chapter3View(arcade.View):
             prison_guard8.center_y = prison_guard8.center_y - 40
             prison_guard8.change_x = prison_guard8.change_x * -1
 
+        arrow.center_y += arrow.change_y
+
+        if arrow.center_y > settings.HEIGHT:
+            arrow.center_y = self.player_sprite.center_y
+            arrow.center_x = self.player_sprite.center_x
+            arrow.change_y = 0
+            arrowstate = "ready"
+
 
     def on_key_press(self, key, modifiers):
+        global arrowstate
         if key == arcade.key.ENTER:
             self.director.next_view()
         if key == arcade.key.LEFT:
             self.player_sprite.change_x = -4
         elif key == arcade.key.RIGHT:
             self.player_sprite.change_x = 4
+        if key == arcade.key.SPACE:
+            if arrowstate == "ready":
+                arrow.center_y = self.player_sprite.center_y
+                arrow.center_x = self.player_sprite.center_x
+                arrow.change_y = 5
+                arrowstate = "fired"
+
+
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
