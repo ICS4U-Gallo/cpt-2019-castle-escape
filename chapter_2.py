@@ -5,12 +5,12 @@ import os
 sprite_scale = 0.5
 wall_scaling = 0.1
 wall_size = 10
-
 movement_speed = 5
 
+
 class Dialogue:
-    def __init__(self, center_x, center_y, width, height, text, font_size=18,
-                 font_face="Arial", face_color=arcade.color.LIGHT_GRAY):
+    def __init__(self, center_x: float, center_y: float, width: float, height: float, text: str, font_size: int=18,
+                 font_face: str="Arial", color: str=arcade.color.LIGHT_GRAY):
         self.center_x = center_x
         self.center_y = center_y
         self.width = width
@@ -19,13 +19,42 @@ class Dialogue:
         self.font_size = font_size
         self.font_face = font_face
         self.pressed = False
-        self.face_color = face_color
+        self.color = color
+
     def draw(self):
         if not self.pressed:
-            arcade.draw_rectangle_filled(self.center_x, self.center_y, self.width, self.height, arcade.color.YELLOW)
+            arcade.draw_rectangle_filled(self.center_x, self.center_y, 20, 20, arcade.color.ALABAMA_CRIMSON)
+            arcade.draw_text("?", self.center_x, self.center_y, arcade.color.BLACK, anchor_x="center", anchor_y="center")
         else:
-            arcade.draw_rectangle_filled(self.center_x, self.center_y, self.width, self.height, self.face_color)
+            arcade.draw_rectangle_filled(self.center_x, self.center_y, self.width, self.height, self.color)
             arcade.draw_text(self.text, self.center_x, self.center_y, arcade.color.BLACK, anchor_x="center", anchor_y="center")
+   
+    def on_press(self):
+        self.pressed = True
+
+    def on_release(self):
+        self.pressed = False
+
+
+class RoomInfo:
+    def __init__(self, center_x: float, center_y: float, text: str, width: float=20, height: float=20, font_size: str=18,
+                 font_face: str="Arial", color: str=arcade.color.LIGHT_GRAY):
+        self.center_x = center_x
+        self.center_y = center_y
+        self.text = text
+        self.width = width
+        self.height = height
+        self.font_size = font_size
+        self.font_face = font_face
+        self.pressed = False
+        self.color = color
+    def draw(self):
+        arcade.draw_rectangle_filled(settings.WIDTH//2, settings.HEIGHT - 15, settings.WIDTH, 30, arcade.color.ANTIQUE_BRASS)
+        if not self.pressed:
+            arcade.draw_rectangle_filled(self.center_x, self.center_y, 20, 20, arcade.color.ANTIQUE_BRASS)
+            arcade.draw_text("?", self.center_x, self.center_y, arcade.color.BLACK, anchor_x="center", anchor_y="center")
+        else:
+            arcade.draw_text(self.text, 10, settings.HEIGHT - 10, arcade.color.BLACK, anchor_x="left", anchor_y="top")
     def on_press(self):
         self.pressed = True
     def on_release(self):
@@ -54,6 +83,7 @@ class Level:
         self.character_list = arcade.SpriteList()
         self.item_list = arcade.SpriteList()
         self.dialogue_list = []
+        self.room_info_list = []
         #self.background = None
 
 def setup_level_1():
@@ -69,10 +99,8 @@ def setup_level_1():
     create_and_add_character_to_list("pics\prison_guard.png", 200, 300, level.character_list)
     create_and_add_item_to_list("pics\gold_1.png", 0.5, 400, 25, level.item_list)
 
-    #conversation = Dialogue(200, 300, 10, 5, "Hi.")
-    #level.dialogue_list.append(conversation)
-
-
+    cell_info = RoomInfo(90, 200, "aaaaaaaaaaaaaaaaaaaaaaah")
+    level.room_info_list.append(cell_info)
     return level
 
 def setup_level_2():
@@ -161,8 +189,10 @@ class Chapter2View(arcade.View):
         self.levels[self.current_level].wall_list.draw()
         self.levels[self.current_level].character_list.draw()
         self.levels[self.current_level].item_list.draw()
-        for button in self.levels[self.current_level].dialogue_list:
-            button.draw()
+        for convo in self.levels[self.current_level].dialogue_list:
+            convo.draw()
+        for info in self.levels[self.current_level].room_info_list:
+            info.draw()
 
         self.player_list.draw()
 
@@ -221,9 +251,11 @@ class Chapter2View(arcade.View):
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         check_mouse_press_for_buttons(x, y, self.levels[self.current_level].dialogue_list)
+        check_mouse_press_for_buttons(x, y, self.levels[self.current_level].room_info_list)
 
     def on_mouse_release(self, x, y, button, key_modifiers):
         check_mouse_release_for_buttons(x, y, self.levels[self.current_level].dialogue_list)
+        check_mouse_release_for_buttons(x, y, self.levels[self.current_level].room_info_list)
 
 if __name__ == "__main__":
     """This section of code will allow you to run your View
