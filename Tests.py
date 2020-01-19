@@ -143,25 +143,18 @@ class MyGame(arcade.Window):
 
 
     def on_key_press(self, key, modifiers):
-        """
-        Called whenever a key is pressed.
-        """
         if key == arcade.key.LEFT:
             self.player.change_x = -MOVEMENT_SPEED
         elif key == arcade.key.RIGHT:
             self.player.change_x = MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
-        """
-        Called when the user releases a key.
-        """
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player.change_y = 0
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player.change_x = 0
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
         if self.player.center_x < 25:
             self.player.center_x = 25
 
