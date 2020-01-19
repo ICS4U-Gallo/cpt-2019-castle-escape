@@ -7,48 +7,56 @@ prison_guard.center_x = 150
 prison_guard.center_y = 525
 prison_guard.change_x = 3
 prison_guard.scale = 0.3
+prison_guard.points = [[-20, -20], [20, -20], [20, 20], [-20, 20]]
 
 prison_guard2 = arcade.Sprite("pics\prison_guard.png", 0.5)
 prison_guard2.center_x = 350
 prison_guard2.center_y = 525
 prison_guard2.change_x = 3
 prison_guard2.scale = 0.3
+prison_guard2.points = [[-20, -20], [20, -20], [20, 20], [-20, 20]]
 
 prison_guard3 = arcade.Sprite("pics\prison_guard.png", 0.5)
 prison_guard3.center_x = 550
 prison_guard3.center_y = 525
 prison_guard3.change_x = 3
 prison_guard3.scale = 0.3
+prison_guard3.points = [[-20, -20], [20, -20], [20, 20], [-20, 20]]
 
 prison_guard4 = arcade.Sprite("pics\prison_guard.png", 0.5)
 prison_guard4.center_x = 750
 prison_guard4.center_y = 525
 prison_guard4.change_x = 3
 prison_guard4.scale = 0.3
+prison_guard4.points = [[-20, -20], [20, -20], [20, 20], [-20, 20]]
 
 prison_guard5 = arcade.Sprite("pics\prison_guard.png", 0.5)
 prison_guard5.center_x = 100
 prison_guard5.center_y = 475
 prison_guard5.change_x = 3
 prison_guard5.scale = 0.3
+prison_guard5.points = [[-20, -20], [20, -20], [20, 20], [-20, 20]]
 
 prison_guard6 = arcade.Sprite("pics\prison_guard.png", 0.5)
 prison_guard6.center_x = 300
 prison_guard6.center_y = 475
 prison_guard6.change_x = 3
 prison_guard6.scale = 0.3
+prison_guard6.points = [[-20, -20], [20, -20], [20, 20], [-20, 20]]
 
 prison_guard7 = arcade.Sprite("pics\prison_guard.png", 0.5)
 prison_guard7.center_x = 500
 prison_guard7.center_y = 475
 prison_guard7.change_x = 3
 prison_guard7.scale = 0.3
+prison_guard7.points = [[-20, -20], [20, -20], [20, 20], [-20, 20]]
 
 prison_guard8 = arcade.Sprite("pics\prison_guard.png", 0.5)
 prison_guard8.center_x = 700
 prison_guard8.center_y = 475
 prison_guard8.change_x = 3
 prison_guard8.scale = 0.3
+prison_guard8.points = [[-20, -20], [20, -20], [20, 20], [-20, 20]]
 
 arrow = arcade.Sprite("pics\darrow.png",)
 arrow.center_x = 400
@@ -56,6 +64,7 @@ arrow.center_y = -50
 arrow.change_y = 0
 arrow.angle = 225
 arrow.scale = .1
+arrow.points = [[-20, -20], [20, -20], [20, 20], [-20, 20]]
 arrowstate = "ready"
 
 class Chapter3View(arcade.View):
@@ -70,6 +79,7 @@ class Chapter3View(arcade.View):
         self.player_sprite.center_x = 100
         self.player_sprite.center_y = 100
         self.player_sprite.change_x = 0
+        self.player_sprite.points = [[-20, -20], [20, -20], [20, 20], [-20, 20]]
         self.player_list = arcade.SpriteList()
         self.player_list.append(self.player_sprite)
 
@@ -193,6 +203,8 @@ class Chapter3View(arcade.View):
             arrow.center_x = self.player_sprite.center_x
             arrow.change_y = 0
             arrowstate = "ready"
+
+
 
 
     def on_key_press(self, key, modifiers):
