@@ -3,10 +3,52 @@ import os
 import settings
 
 prison_guard = arcade.Sprite("pics\prison_guard.png", 0.5)
-prison_guard.center_x = 60
+prison_guard.center_x = 150
 prison_guard.center_y = 525
 prison_guard.change_x = 3
 prison_guard.scale = 0.3
+
+prison_guard2 = arcade.Sprite("pics\prison_guard.png", 0.5)
+prison_guard2.center_x = 350
+prison_guard2.center_y = 525
+prison_guard2.change_x = 3
+prison_guard2.scale = 0.3
+
+prison_guard3 = arcade.Sprite("pics\prison_guard.png", 0.5)
+prison_guard3.center_x = 550
+prison_guard3.center_y = 525
+prison_guard3.change_x = 3
+prison_guard3.scale = 0.3
+
+prison_guard4 = arcade.Sprite("pics\prison_guard.png", 0.5)
+prison_guard4.center_x = 750
+prison_guard4.center_y = 525
+prison_guard4.change_x = 3
+prison_guard4.scale = 0.3
+
+prison_guard5 = arcade.Sprite("pics\prison_guard.png", 0.5)
+prison_guard5.center_x = 100
+prison_guard5.center_y = 475
+prison_guard5.change_x = 3
+prison_guard5.scale = 0.3
+
+prison_guard6 = arcade.Sprite("pics\prison_guard.png", 0.5)
+prison_guard6.center_x = 300
+prison_guard6.center_y = 475
+prison_guard6.change_x = 3
+prison_guard6.scale = 0.3
+
+prison_guard7 = arcade.Sprite("pics\prison_guard.png", 0.5)
+prison_guard7.center_x = 500
+prison_guard7.center_y = 475
+prison_guard7.change_x = 3
+prison_guard7.scale = 0.3
+
+prison_guard8 = arcade.Sprite("pics\prison_guard.png", 0.5)
+prison_guard8.center_x = 700
+prison_guard8.center_y = 475
+prison_guard8.change_x = 3
+prison_guard8.scale = 0.3
 
 class Chapter3View(arcade.View):
     def __init__(self):
@@ -24,6 +66,13 @@ class Chapter3View(arcade.View):
         self.player_list.append(self.player_sprite)
 
         self.player_list.append(prison_guard)
+        self.player_list.append(prison_guard2)
+        self.player_list.append(prison_guard3)
+        self.player_list.append(prison_guard4)
+        self.player_list.append(prison_guard5)
+        self.player_list.append(prison_guard6)
+        self.player_list.append(prison_guard7)
+        self.player_list.append(prison_guard8)
 
 
     def on_show(self):
@@ -55,6 +104,77 @@ class Chapter3View(arcade.View):
         if prison_guard.center_x < 50:
             prison_guard.center_y = prison_guard.center_y - 40
             prison_guard.change_x = prison_guard.change_x * -1
+
+        prison_guard2.center_x += prison_guard2.change_x
+
+        if prison_guard2.center_x > 750:
+            prison_guard2.center_y = prison_guard2.center_y - 40
+            prison_guard2.change_x = prison_guard2.change_x * -1
+
+        if prison_guard2.center_x < 50:
+            prison_guard2.center_y = prison_guard2.center_y - 40
+            prison_guard2.change_x = prison_guard2.change_x * -1
+
+        prison_guard3.center_x += prison_guard3.change_x
+
+        if prison_guard3.center_x > 750:
+            prison_guard3.center_y = prison_guard3.center_y - 40
+            prison_guard3.change_x = prison_guard3.change_x * -1
+
+        if prison_guard3.center_x < 50:
+            prison_guard3.center_y = prison_guard3.center_y - 40
+            prison_guard3.change_x = prison_guard3.change_x * -1
+
+        prison_guard4.center_x += prison_guard4.change_x
+
+        if prison_guard4.center_x > 750:
+            prison_guard4.center_y = prison_guard4.center_y - 40
+            prison_guard4.change_x = prison_guard4.change_x * -1
+
+        if prison_guard4.center_x < 50:
+            prison_guard4.center_y = prison_guard4.center_y - 40
+            prison_guard4.change_x = prison_guard4.change_x * -1
+
+        prison_guard5.center_x += prison_guard5.change_x
+
+        if prison_guard5.center_x > 750:
+            prison_guard5.center_y = prison_guard5.center_y - 40
+            prison_guard5.change_x = prison_guard5.change_x * -1
+
+        if prison_guard5.center_x < 50:
+            prison_guard5.center_y = prison_guard5.center_y - 40
+            prison_guard5.change_x = prison_guard5.change_x * -1
+
+        prison_guard6.center_x += prison_guard6.change_x
+
+        if prison_guard6.center_x > 750:
+            prison_guard6.center_y = prison_guard6.center_y - 40
+            prison_guard6.change_x = prison_guard6.change_x * -1
+
+        if prison_guard6.center_x < 50:
+            prison_guard6.center_y = prison_guard6.center_y - 40
+            prison_guard6.change_x = prison_guard6.change_x * -1
+
+        prison_guard7.center_x += prison_guard7.change_x
+
+        if prison_guard7.center_x > 750:
+            prison_guard7.center_y = prison_guard7.center_y - 40
+            prison_guard7.change_x = prison_guard7.change_x * -1
+
+        if prison_guard7.center_x < 50:
+            prison_guard7.center_y = prison_guard7.center_y - 40
+            prison_guard7.change_x = prison_guard7.change_x * -1
+
+        prison_guard8.center_x += prison_guard8.change_x
+
+        if prison_guard8.center_x > 750:
+            prison_guard8.center_y = prison_guard8.center_y - 40
+            prison_guard8.change_x = prison_guard8.change_x * -1
+
+        if prison_guard8.center_x < 50:
+            prison_guard8.center_y = prison_guard8.center_y - 40
+            prison_guard8.change_x = prison_guard8.change_x * -1
+
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ENTER:
