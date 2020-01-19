@@ -48,6 +48,7 @@ class RoomInfo:
         self.font_face = font_face
         self.pressed = False
         self.color = color
+    
     def draw(self):
         arcade.draw_rectangle_filled(settings.WIDTH//2, settings.HEIGHT - 15, settings.WIDTH, 30, arcade.color.ANTIQUE_BRASS)
         if not self.pressed:
@@ -59,6 +60,7 @@ class RoomInfo:
         self.pressed = True
     def on_release(self):
         self.pressed = False
+
 
 def check_mouse_press_for_buttons(x, y, button_list):
     for button in button_list:
@@ -72,10 +74,12 @@ def check_mouse_press_for_buttons(x, y, button_list):
             continue
         button.on_press()
 
+
 def check_mouse_release_for_buttons(_x, _y, button_list):
     for button in button_list:
         if button.pressed:
             button.on_release()
+
 
 class Level:
     def __init__(self):
@@ -94,12 +98,32 @@ def setup_level_1():
     wall.bottom = 5 * wall_size
     level.wall_list.append(wall)
 
-    create_and_add_vertical_walls_to_list(3, 13, 24, level.wall_list)
-    create_and_add_horiontal_walls_to_list(5, 200, 50, level.wall_list)
-    create_and_add_character_to_list("pics\prison_guard.png", 200, 300, level.character_list)
-    create_and_add_item_to_list("pics\gold_1.png", 0.5, 400, 25, level.item_list)
+    create_and_add_vertical_walls_to_list(4, 39, 4, level.wall_list)
+    create_and_add_vertical_walls_to_list(4, 25, 19, level.wall_list)
+    create_and_add_vertical_walls_to_list(33, 54, 19, level.wall_list)
+    create_and_add_vertical_walls_to_list(4, 25, 34, level.wall_list)
+    create_and_add_vertical_walls_to_list(33, 54, 34, level.wall_list)
+    create_and_add_vertical_walls_to_list(14, 25, 54, level.wall_list)
+    create_and_add_vertical_walls_to_list(33, 44, 54, level.wall_list)
+    create_and_add_vertical_walls_to_list(14, 45, 74, level.wall_list)
+    create_and_add_vertical_walls_to_list(54, settings.HEIGHT, 24, level.wall_list)
+    create_and_add_vertical_walls_to_list(54, settings.HEIGHT, 30, level.wall_list)
 
-    cell_info = RoomInfo(90, 200, "aaaaaaaaaaaaaaaaaaaaaaah")
+    create_and_add_horiontal_walls_to_list(4, 34, 4, level.wall_list)
+    create_and_add_horiontal_walls_to_list(4, 9, 19, level.wall_list)
+    create_and_add_horiontal_walls_to_list(15, 24, 19, level.wall_list)
+    create_and_add_horiontal_walls_to_list(30, 54, 19, level.wall_list)
+    create_and_add_horiontal_walls_to_list(54, 74, 14, level.wall_list)
+    create_and_add_horiontal_walls_to_list(4, 24, 39, level.wall_list)
+    create_and_add_horiontal_walls_to_list(30, 54, 39, level.wall_list)
+    create_and_add_horiontal_walls_to_list(54, 74, 44, level.wall_list)
+    create_and_add_horiontal_walls_to_list(19, 24, 54, level.wall_list)
+    create_and_add_horiontal_walls_to_list(30, 35, 54, level.wall_list)
+
+    create_and_add_character_to_list("pics\prison_guard.png", 200, 300, level.character_list)
+    create_and_add_item_to_list("pics\gold_1.png", 0.5, 400, 250, level.item_list)
+
+    cell_info = RoomInfo(90, 400, "aaaaaaaaaaaaaaaaaaaaaaah")
     level.room_info_list.append(cell_info)
     return level
 
@@ -129,8 +153,8 @@ def setup_level_3():
 
     return level
 
-def create_and_add_vertical_walls_to_list(column_start: int, column_end: int, x: int, wall_list: arcade.SpriteList):
-    for y in range(column_start * wall_size, column_end * wall_size, wall_size):
+def create_and_add_vertical_walls_to_list(column_base: int, column_top: int, x: int, wall_list: arcade.SpriteList):
+    for y in range(column_base * wall_size, column_top * wall_size, wall_size):
         wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", wall_scaling)
         wall.left = x * wall_size
         wall.bottom = y
@@ -191,10 +215,11 @@ class Chapter2View(arcade.View):
         self.levels[self.current_level].item_list.draw()
         for convo in self.levels[self.current_level].dialogue_list:
             convo.draw()
-        for info in self.levels[self.current_level].room_info_list:
-            info.draw()
 
         self.player_list.draw()
+
+        for info in self.levels[self.current_level].room_info_list:
+            info.draw()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
