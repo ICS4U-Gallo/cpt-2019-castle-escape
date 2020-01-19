@@ -7,7 +7,7 @@ wall_scaling = 0.1
 wall_size = 10
 
 movement_speed = 5
-'''
+
 class Dialogue:
     def __init__(self, center_x, center_y, width, height, text, font_size=18,
                  font_face="Arial", face_color=arcade.color.LIGHT_GRAY):
@@ -20,15 +20,41 @@ class Dialogue:
         self.font_face = font_face
         self.pressed = False
         self.face_color = face_color
-'''
+    def draw(self):
+        if not self.pressed:
+            arcade.draw_rectangle_filled(self.center_x, self.center_y, self.width, self.height, arcade.color.YELLOW)
+        else:
+            arcade.draw_rectangle_filled(self.center_x, self.center_y, self.width, self.height, self.face_color)
+            arcade.draw_text(self.text, self.center_x, self.center_y, arcade.color.BLACK, anchor_x="center", anchor_y="center")
+    def on_press(self):
+        self.pressed = True
+    def on_release(self):
+        self.pressed = False
+
+def check_mouse_press_for_buttons(x, y, button_list):
+    for button in button_list:
+        if x > button.center_x + button.width / 2:
+            continue
+        if x < button.center_x - button.width / 2:
+            continue
+        if y > button.center_y + button.height / 2:
+            continue
+        if y < button.center_y - button.height / 2:
+            continue
+        button.on_press()
+
+def check_mouse_release_for_buttons(_x, _y, button_list):
+    for button in button_list:
+        if button.pressed:
+            button.on_release()
+
 class Level:
     def __init__(self):
         self.wall_list = arcade.SpriteList()
         self.character_list = arcade.SpriteList()
         self.item_list = arcade.SpriteList()
-        #self.dialogue_list = []
+        self.dialogue_list = []
         #self.background = None
-
 
 def setup_level_1():
     level = Level()
@@ -40,16 +66,8 @@ def setup_level_1():
 
     create_and_add_vertical_walls_to_list(3, 13, 24, level.wall_list)
     create_and_add_horiontal_walls_to_list(5, 200, 50, level.wall_list)
-
-    prison_guard = arcade.Sprite("pics\prison_guard.png", sprite_scale)
-    prison_guard.center_x = 200
-    prison_guard.center_y = 300
-    level.character_list.append(prison_guard)
-
-    money = Item("pics\gold_1.png", 0.5)
-    money.center_x = 400
-    money.center_y = 25
-    level.item_list.append(money)
+    create_and_add_character_to_list("pics\prison_guard.png", 200, 300, level.character_list)
+    create_and_add_item_to_list("pics\gold_1.png", 0.5, 400, 25, level.item_list)
 
     #conversation = Dialogue(200, 300, 10, 5, "Hi.")
     #level.dialogue_list.append(conversation)
@@ -67,6 +85,9 @@ def setup_level_2():
 
     create_and_add_vertical_walls_to_list(3, 13, 24, level.wall_list)
     create_and_add_horiontal_walls_to_list(5, 200, 50, level.wall_list)
+    
+    guard_convo = Dialogue(100, 300, 50, 50, "omgf")
+    level.dialogue_list.append(guard_convo)
 
     return level
 
@@ -79,7 +100,6 @@ def setup_level_3():
     level.wall_list.append(wall)
 
     return level
-
 
 def create_and_add_vertical_walls_to_list(column_start: int, column_end: int, x: int, wall_list: arcade.SpriteList):
     for y in range(column_start * wall_size, column_end * wall_size, wall_size):
@@ -95,9 +115,17 @@ def create_and_add_horiontal_walls_to_list(row_start: int, row_end: int, y: int,
         wall.bottom = y * wall_size
         wall_list.append(wall)
 
+def create_and_add_character_to_list(filename: str, center_x: float, center_y: float, character_list: arcade.SpriteList) -> list:
+    character = arcade.Sprite(filename, sprite_scale)
+    character.center_x = center_x
+    character.center_y = center_y
+    character_list.append(character)
 
-class Item(arcade.Sprite):
-    pass
+def create_and_add_item_to_list(filename: str, scale: float, center_x: float, center_y: float, item_list: arcade.SpriteList) -> list:
+    item = arcade.Sprite(filename, scale)
+    item.center_x = center_x
+    item.center_y = center_y
+    item_list.append(item)
 
 class Chapter2View(arcade.View):
 
@@ -127,12 +155,15 @@ class Chapter2View(arcade.View):
 
         arcade.set_background_color(arcade.color.AMAZON)
         
-
     def on_draw(self):
         arcade.start_render()
+
         self.levels[self.current_level].wall_list.draw()
         self.levels[self.current_level].character_list.draw()
         self.levels[self.current_level].item_list.draw()
+        for button in self.levels[self.current_level].dialogue_list:
+            button.draw()
+
         self.player_list.draw()
 
     def on_key_press(self, key, modifiers):
@@ -188,17 +219,11 @@ class Chapter2View(arcade.View):
             self.director.next_view()
             #error in sys.excepthook when manually going to next view???
 
-    def on_mouse_press(self, x, y, button, modifiers):
-        """
-        Called when the user presses a mouse button.
-        """
-        pass
+    def on_mouse_press(self, x, y, button, key_modifiers):
+        check_mouse_press_for_buttons(x, y, self.levels[self.current_level].dialogue_list)
 
-    def on_mouse_release(self, x, y, button, modifiers):
-        """
-        Called when a user releases a mouse button.
-        """
-        pass
+    def on_mouse_release(self, x, y, button, key_modifiers):
+        check_mouse_release_for_buttons(x, y, self.levels[self.current_level].dialogue_list)
 
 if __name__ == "__main__":
     """This section of code will allow you to run your View
