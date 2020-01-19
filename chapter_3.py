@@ -189,7 +189,7 @@ class Chapter3View(arcade.View):
         arrow.center_y += arrow.change_y
 
         if arrow.center_y > settings.HEIGHT:
-            arrow.center_y = self.player_sprite.center_y
+            arrow.center_y = self.player_sprite.center_y - 150
             arrow.center_x = self.player_sprite.center_x
             arrow.change_y = 0
             arrowstate = "ready"
