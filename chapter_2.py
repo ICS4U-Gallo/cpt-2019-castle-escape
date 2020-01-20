@@ -2,21 +2,35 @@ import arcade
 import settings
 import os
 
-sprite_scale = 0.5
+#information for sprites
 wall_scaling = 0.1
 wall_size = 10
-movement_speed = 5
+movement_speed = 3
 
 
 class Player(arcade.Sprite):
+    """Player class
+
+    """
     def __init__(self):
         super().__init__()
-        current_texture = 0
+
+        #load textures for player
         self.first_version = arcade.load_texture("pics\maleAdventurer_idle.png")
         self.first_version.scale = 0.3
         self.new_version = arcade.load_texture("pics\warrior.png")
-        self.new_version.scale = 0.2
-    def update_animation(self, inventory, delta_time: float=1/60):
+        self.new_version.scale = 0.15
+
+    def update_animation(self, inventory: int, delta_time: float=1/60):
+        """Updates texture of player sprite based on inventory value
+
+        Args:
+            inventory (int): number of items the player sprite has collided with.
+            delta_time (float): allows textures to be updated with time.
+        Return:
+            Sprite texture depending on inventory value
+        """
+        #if item in second level is picked up, player "changes outfits"
         if inventory >= 2:
             self.texture = self.new_version
         else:
@@ -25,6 +39,17 @@ class Player(arcade.Sprite):
 
 
 class Dialogue:
+    """Dialogue class
+    
+    Attrs:
+        center_x (float): x coordinate of center of text box.
+        center_y (float): y coordinate of center of text box.
+        width (float): Width of text box.
+        height (float): Height of text box.
+        text (str): Dialogue in text box.
+        font_size (int): Size of text.
+
+    """
     def __init__(self, center_x: float, center_y: float, width: float, height: float, text: str, font_size: int=18,
                  font_face: str="Arial", color: str=arcade.color.LIGHT_GRAY):
         self.center_x = center_x
@@ -38,21 +63,46 @@ class Dialogue:
         self.color = color
 
     def draw(self):
+        """Draws exclamation point or dialogue box for character based on if button is pressed
+
+        Returns:
+            Box with exclamation or dialogue box
+        """
         if not self.pressed:
+            #draw dialogue prompt
             arcade.draw_rectangle_filled(self.center_x, self.center_y, 20, 20, arcade.color.ALABAMA_CRIMSON)
             arcade.draw_text("?", self.center_x, self.center_y, arcade.color.BLACK, anchor_x="center", anchor_y="center")
         else:
+            #draw dialogue box
             arcade.draw_rectangle_filled(self.center_x, self.center_y, self.width, self.height, self.color)
             arcade.draw_text(self.text, self.center_x, self.center_y, arcade.color.BLACK, anchor_x="center", anchor_y="center")
    
     def on_press(self):
+        """Makes button pressed true
+        Returns:
+            Button is pressed
+        """
         self.pressed = True
 
     def on_release(self):
+        """Makes button pressed false
+        Returns:
+            Button is not pressed
+        """
         self.pressed = False
 
 
 class RoomInfo:
+    """Room information class
+
+    Attrs:
+        center_x (float): x coordinate of center of info prompt box.
+        center_y (float): y coordinate of center of info prompt box.
+        text (str): All room information
+        width (float): Width of info prompt box.
+        height (float): Height of info prompt box.
+
+    """
     def __init__(self, center_x: float, center_y: float, text: str, width: float=20, height: float=20, font_size: str=18,
                  font_face: str="Arial", color: str=arcade.color.LIGHT_GRAY):
         self.center_x = center_x
@@ -66,19 +116,43 @@ class RoomInfo:
         self.color = color
     
     def draw(self):
+        """Draws question mark for character or dialogue box based on if button is pressed
+
+        Returns:
+            Info promp box with question mark or room info text at top of screen.
+        """
+        #automatic empty text box at top of screen
         arcade.draw_rectangle_filled(settings.WIDTH//2, settings.HEIGHT - 15, settings.WIDTH, 30, arcade.color.ANTIQUE_BRASS)
         if not self.pressed:
+            #draw info prompt in room
             arcade.draw_rectangle_filled(self.center_x, self.center_y, 20, 20, arcade.color.ANTIQUE_BRASS)
             arcade.draw_text("?", self.center_x, self.center_y, arcade.color.BLACK, anchor_x="center", anchor_y="center")
         else:
+            #draw info to top of screen when clicked
             arcade.draw_text(self.text, 10, settings.HEIGHT - 10, arcade.color.BLACK, anchor_x="left", anchor_y="top")
+
     def on_press(self):
+        """Makes button pressed false
+        Returns:
+            Button is not pressed
+        """
         self.pressed = True
     def on_release(self):
+        """Makes button pressed false
+        Returns:
+            Button is not pressed
+        """
         self.pressed = False
 
 
-def check_mouse_press_for_buttons(x, y, button_list):
+def check_mouse_press_for_buttons(x: float, y: float, button_list: list):
+    """Checks if mouse clicks within area of button and calls button on_press method if so
+
+    Args:
+        x (float): x coordinate of mouse.
+        y (float): y coordinate of mouse.
+        button_list (list): list of buttons.
+    """
     for button in button_list:
         if x > button.center_x + button.width / 2:
             continue
@@ -88,17 +162,30 @@ def check_mouse_press_for_buttons(x, y, button_list):
             continue
         if y < button.center_y - button.height / 2:
             continue
+        #sets button pressed to true
         button.on_press()
 
 
-def check_mouse_release_for_buttons(_x, _y, button_list):
+def check_mouse_release_for_buttons(x: float, y: float, button_list: list):
+    """Calls all button on_release methods when mouse is released
+
+    Args:
+        x (float): x coordinate of mouse.
+        y (float): y coordinate of mouse.
+        button_list (list): list of buttons.
+    """
     for button in button_list:
         if button.pressed:
+            #sets button pressed to false
             button.on_release()
 
 
 class Level:
+    """Holds information for all levels
+
+    """
     def __init__(self):
+        #empty lists to be filled when objects are defined
         self.wall_list = arcade.SpriteList()
         self.character_list = arcade.SpriteList()
         self.item_list = arcade.SpriteList()
@@ -107,14 +194,16 @@ class Level:
         #self.background = None
 
 
-def setup_level_1():
+def setup_level_1() -> object:
+    """Calls walls, items, characters, and room information to setup level 1
+
+    Returns:
+        Level object of Level class, containing lists of all elements of level
+    """
+    #create level object
     level = Level()
 
-    wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", wall_scaling)
-    wall.left = 7 * wall_size
-    wall.bottom = 5 * wall_size
-    level.wall_list.append(wall)
-
+    #create vertical walls for level
     create_and_add_vertical_walls_to_list(4, 39, 4, level.wall_list)
     create_and_add_vertical_walls_to_list(4, 25, 19, level.wall_list)
     create_and_add_vertical_walls_to_list(33, 54, 19, level.wall_list)
@@ -126,6 +215,7 @@ def setup_level_1():
     create_and_add_vertical_walls_to_list(54, settings.HEIGHT, 23, level.wall_list)
     create_and_add_vertical_walls_to_list(54, settings.HEIGHT, 30, level.wall_list)
 
+    #create horizontal walls for level
     create_and_add_horiontal_walls_to_list(4, 34, 4, level.wall_list)
     create_and_add_horiontal_walls_to_list(4, 9, 19, level.wall_list)
     create_and_add_horiontal_walls_to_list(15, 24, 19, level.wall_list)
@@ -137,72 +227,77 @@ def setup_level_1():
     create_and_add_horiontal_walls_to_list(19, 24, 54, level.wall_list)
     create_and_add_horiontal_walls_to_list(30, 35, 54, level.wall_list)
 
+    #create knight character for level
     create_and_add_character_to_list("pics\prison_guard.png", 0.2, 270, 470, level.character_list)
+
+    #create coin item to bribe knight character
     create_and_add_item_to_list("pics\gold_1.png", 0.5, 400, 250, level.item_list)
 
+    #create prompts and info for rooms for object
     cell_info = RoomInfo(90, 400, "aaaaaaaaaaaaaaaaaaaaaaah")
     level.room_info_list.append(cell_info)
+
     return level
 
 
-def setup_level_2():
+def setup_level_2() -> object:
+    """Calls walls, items, characters, and room information to setup level 2
+
+    Returns:
+        Level object of Level class, containing lists of all elements of level
+    """
+    #create level object
     level = Level()
 
+    #create vertical walls for level
     create_and_add_vertical_walls_to_list(4, 19, 4, level.wall_list)
-
     create_and_add_vertical_walls_to_list(12, 54, 19, level.wall_list)
-
     create_and_add_vertical_walls_to_list(0, 5, 23, level.wall_list)
     create_and_add_vertical_walls_to_list(0, 4, 30, level.wall_list)
-
     create_and_add_vertical_walls_to_list(55, settings.HEIGHT, 23, level.wall_list)
     create_and_add_vertical_walls_to_list(55, settings.HEIGHT, 30, level.wall_list)
-
     create_and_add_vertical_walls_to_list(4, 15, 34, level.wall_list)
     create_and_add_vertical_walls_to_list(24, 54, 34, level.wall_list)
-
     create_and_add_vertical_walls_to_list(29, 45, 47, level.wall_list)
-
     create_and_add_vertical_walls_to_list(24, 29, 54, level.wall_list)
-
     create_and_add_vertical_walls_to_list(44, 54, 54, level.wall_list)
-
     create_and_add_vertical_walls_to_list(14, 55, 73, level.wall_list)
 
-
+    #create horizontal walls for level
     create_and_add_horiontal_walls_to_list(4, 24, 4, level.wall_list)
     create_and_add_horiontal_walls_to_list(30, 34, 4, level.wall_list)
-
     create_and_add_horiontal_walls_to_list(20, 24, 14, level.wall_list)
     create_and_add_horiontal_walls_to_list(30, 74, 14, level.wall_list)
-
     create_and_add_horiontal_walls_to_list(4, 19, 19, level.wall_list)
-
     create_and_add_horiontal_walls_to_list(34, 54, 24, level.wall_list)
-
     create_and_add_horiontal_walls_to_list(48, 60, 29, level.wall_list)
     create_and_add_horiontal_walls_to_list(68, 74, 29, level.wall_list)
-
     create_and_add_horiontal_walls_to_list(48, 60, 44, level.wall_list)
     create_and_add_horiontal_walls_to_list(68, 74, 44, level.wall_list)
-
     create_and_add_horiontal_walls_to_list(54, 73, 54, level.wall_list)
-
     create_and_add_horiontal_walls_to_list(19, 24, 54, level.wall_list)
-    create_and_add_horiontal_walls_to_list(30, 35, 54, level.wall_list)
+    create_and_add_horiontal_walls_to_list(30, 35, 54, level.wall_list)   
 
+    #create sword item for "outfit change" 
+    create_and_add_item_to_list("pics\sword_item.png", 0.05, 75, 100, level.item_list)
 
-    
+    #create mysterious figure for level
+    create_and_add_character_to_list("pics\mystery_figure.png", 0.095, 270, 350, level.character_list)
+
+    #create dialogue for mysterious figure character
     guard_convo = Dialogue(100, 300, 50, 50, "omgf")
     level.dialogue_list.append(guard_convo)
 
-    create_and_add_item_to_list("pics\gold_1.png", 0.5, 400, 250, level.item_list)
-
-
     return level
 
 
-def setup_level_3():
+def setup_level_3() -> object:
+    """Calls walls, items, characters, and room information to setup level 3
+
+    Returns:
+        Level object of Level class, containing lists of all elements of level
+    """
+    #create level object
     level = Level()
 
     wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", wall_scaling)
@@ -213,12 +308,28 @@ def setup_level_3():
     return level
 
 
-def setup_level_4():
+def setup_level_4() -> object:
+    """Creates empty level for exit chapter screen
+
+    Returns:
+        Level object for Level class, empty level
+    """
+    #create level object
     level = Level()
+
     return level
 
 
-def create_and_add_vertical_walls_to_list(column_base: int, column_top: int, x: int, wall_list: arcade.SpriteList):
+def create_and_add_vertical_walls_to_list(column_base: int, column_top: int, x: int, wall_list: arcade.SpriteList) -> None:
+    """Creates vertical wall and adds to wall list
+
+    Args:
+        column_base: Base of the wall.
+        column_top: Top of the wall.
+        x: Horizontal column placement.
+        wall_list: list of wall sprites for level.
+    """
+    #loop creation of wall sprites 
     for y in range(column_base * wall_size, column_top * wall_size, wall_size):
         wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", wall_scaling)
         wall.left = x * wall_size
@@ -226,7 +337,16 @@ def create_and_add_vertical_walls_to_list(column_base: int, column_top: int, x: 
         wall_list.append(wall)
 
 
-def create_and_add_horiontal_walls_to_list(row_start: int, row_end: int, y: int, wall_list: arcade.SpriteList):
+def create_and_add_horiontal_walls_to_list(row_start: int, row_end: int, y: int, wall_list: arcade.SpriteList) -> None:
+    """Creates horizontal wall and adds to wall list
+
+    Args:
+        row_start: x value of wall starting point.
+        row_end: x value of wall ending point.
+        y: y value of row.
+        wall_list: list of wall sprites for level.
+    """
+    #loop creation of wall sprites
     for x in range(row_start * wall_size, row_end * wall_size, wall_size):
         wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", wall_scaling)
         wall.left = x
@@ -234,14 +354,32 @@ def create_and_add_horiontal_walls_to_list(row_start: int, row_end: int, y: int,
         wall_list.append(wall)
 
 
-def create_and_add_character_to_list(filename: str, scale: float, center_x: float, center_y: float, character_list: arcade.SpriteList) -> list:
+def create_and_add_character_to_list(filename: str, scale: float, center_x: float, center_y: float, character_list: arcade.SpriteList) -> None:
+    """Creates character and adds to character list
+
+    Args:
+        filename: Name of image.
+        scale: Scaling of sprite.
+        center_x: x coordinate of center of sprite.
+        center_y: y coordinate of center of sprite.
+        character_list: list of character sprites for level.
+    """
     character = arcade.Sprite(filename, scale)
     character.center_x = center_x
     character.center_y = center_y
     character_list.append(character)
 
 
-def create_and_add_item_to_list(filename: str, scale: float, center_x: float, center_y: float, item_list: arcade.SpriteList) -> list:
+def create_and_add_item_to_list(filename: str, scale: float, center_x: float, center_y: float, item_list: arcade.SpriteList) -> None:
+    """Creates item and adds to item list
+
+    Args:
+        filename: Name of image.
+        scale: Scaling of sprite.
+        center_x: x coordinate of center of sprite.
+        center_y: y coordinate of center of sprite.
+        item_list: list of item sprites for level.
+    """
     item = arcade.Sprite(filename, scale)
     item.center_x = center_x
     item.center_y = center_y
@@ -249,22 +387,28 @@ def create_and_add_item_to_list(filename: str, scale: float, center_x: float, ce
 
 
 class Chapter2View(arcade.View):
+    """Main application class
 
+    """
     def __init__(self):
         super().__init__()
 
+        #faster image loading
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
 
+        #setting increasing values to zero 
         self.current_level = 0
         self.inventory = 0
 
+        #make main player and append to list
         self.player_sprite = Player()
         self.player_sprite.center_x = 100
         self.player_sprite.center_y = 100
         self.player_list = arcade.SpriteList()
         self.player_list.append(self.player_sprite)
 
+        #create each level
         self.levels = [
             setup_level_1(),
             setup_level_2(),
@@ -272,26 +416,38 @@ class Chapter2View(arcade.View):
             setup_level_4()
         ]
 
+        #physics engine for every level between player and walls
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.levels[self.current_level].wall_list)
 
+        #set background
         arcade.set_background_color(arcade.color.AMAZON)
         
     def on_draw(self):
         arcade.start_render()
 
+        #draw lists for most room components
         self.levels[self.current_level].wall_list.draw()
         self.levels[self.current_level].character_list.draw()
         self.levels[self.current_level].item_list.draw()
         for convo in self.levels[self.current_level].dialogue_list:
             convo.draw()
 
+        #draw player
         self.player_list.draw()
         if self.current_level == 3:
                 arcade.draw_text("omfg", settings.WIDTH//2, settings.HEIGHT//2, arcade.color.WHITE, 25)
+
+        #draw list for room info last so player doesn't go infront
         for info in self.levels[self.current_level].room_info_list:
             info.draw()
 
-    def on_key_press(self, key, modifiers):
+    def on_key_press(self, key: arcade.key, modifiers: int):
+        """Called when a key is pressed
+
+        Args:
+            key (arcade.key)
+        """
+        #player movement with keys
         if key == arcade.key.UP:
             self.player_sprite.change_y = movement_speed
         elif key == arcade.key.DOWN:
@@ -300,16 +456,20 @@ class Chapter2View(arcade.View):
             self.player_sprite.change_x = -movement_speed
         elif key == arcade.key.RIGHT:
             self.player_sprite.change_x = movement_speed
+
+        #go to next view from level 4
         elif key == arcade.key.ENTER and self.current_level == 3:
             self.director.next_view()
 
-    def on_key_release(self, key, modifiers):
+    def on_key_release(self, key: arcade.key, modifiers):
+
+        #stops sprite movement when key is released
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player_sprite.change_y = 0
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
-    def on_update(self, delta_time):
+    def on_update(self, delta_time: float) -> None:
 
         hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.levels[self.current_level].item_list)
         for item in hit_list:
@@ -350,11 +510,11 @@ class Chapter2View(arcade.View):
         elif self.player_sprite.center_y > settings.HEIGHT and self.current_level == 2:
             self.current_level = 3
 
-    def on_mouse_press(self, x, y, button, key_modifiers):
+    def on_mouse_press(self, x: float, y: float, button, modifiers) -> None:
         check_mouse_press_for_buttons(x, y, self.levels[self.current_level].dialogue_list)
         check_mouse_press_for_buttons(x, y, self.levels[self.current_level].room_info_list)
 
-    def on_mouse_release(self, x, y, button, key_modifiers):
+    def on_mouse_release(self, x: float, y: float, button, modifiers) -> None:
         check_mouse_release_for_buttons(x, y, self.levels[self.current_level].dialogue_list)
         check_mouse_release_for_buttons(x, y, self.levels[self.current_level].room_info_list)
 
