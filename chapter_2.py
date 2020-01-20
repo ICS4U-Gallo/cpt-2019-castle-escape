@@ -14,8 +14,8 @@ class Player(arcade.Sprite):
         current_texture = 0
         self.first_version = arcade.load_texture("pics\maleAdventurer_idle.png")
         self.first_version.scale = 0.3
-        self.new_version = arcade.load_texture("pics\prison_guard.png")
-        self.new_version.scale = 0.1
+        self.new_version = arcade.load_texture("pics\warrior.png")
+        self.new_version.scale = 0.2
     def update_animation(self, inventory, delta_time: float=1/60):
         if inventory >= 2:
             self.texture = self.new_version
@@ -148,13 +148,50 @@ def setup_level_1():
 def setup_level_2():
     level = Level()
 
-    wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",wall_scaling)
-    wall.left = 15 * wall_size
-    wall.bottom = 20 * wall_size
-    level.wall_list.append(wall)
+    create_and_add_vertical_walls_to_list(4, 19, 4, level.wall_list)
 
-    create_and_add_vertical_walls_to_list(3, 13, 24, level.wall_list)
-    create_and_add_horiontal_walls_to_list(5, 200, 50, level.wall_list)
+    create_and_add_vertical_walls_to_list(12, 54, 19, level.wall_list)
+
+    create_and_add_vertical_walls_to_list(0, 5, 23, level.wall_list)
+    create_and_add_vertical_walls_to_list(0, 4, 30, level.wall_list)
+
+    create_and_add_vertical_walls_to_list(55, settings.HEIGHT, 23, level.wall_list)
+    create_and_add_vertical_walls_to_list(55, settings.HEIGHT, 30, level.wall_list)
+
+    create_and_add_vertical_walls_to_list(4, 15, 34, level.wall_list)
+    create_and_add_vertical_walls_to_list(24, 54, 34, level.wall_list)
+
+    create_and_add_vertical_walls_to_list(29, 45, 47, level.wall_list)
+
+    create_and_add_vertical_walls_to_list(24, 29, 54, level.wall_list)
+
+    create_and_add_vertical_walls_to_list(44, 54, 54, level.wall_list)
+
+    create_and_add_vertical_walls_to_list(14, 55, 73, level.wall_list)
+
+
+    create_and_add_horiontal_walls_to_list(4, 24, 4, level.wall_list)
+    create_and_add_horiontal_walls_to_list(30, 34, 4, level.wall_list)
+
+    create_and_add_horiontal_walls_to_list(20, 24, 14, level.wall_list)
+    create_and_add_horiontal_walls_to_list(30, 74, 14, level.wall_list)
+
+    create_and_add_horiontal_walls_to_list(4, 19, 19, level.wall_list)
+
+    create_and_add_horiontal_walls_to_list(34, 54, 24, level.wall_list)
+
+    create_and_add_horiontal_walls_to_list(48, 60, 29, level.wall_list)
+    create_and_add_horiontal_walls_to_list(68, 74, 29, level.wall_list)
+
+    create_and_add_horiontal_walls_to_list(48, 60, 44, level.wall_list)
+    create_and_add_horiontal_walls_to_list(68, 74, 44, level.wall_list)
+
+    create_and_add_horiontal_walls_to_list(54, 73, 54, level.wall_list)
+
+    create_and_add_horiontal_walls_to_list(19, 24, 54, level.wall_list)
+    create_and_add_horiontal_walls_to_list(30, 35, 54, level.wall_list)
+
+
     
     guard_convo = Dialogue(100, 300, 50, 50, "omgf")
     level.dialogue_list.append(guard_convo)
@@ -173,6 +210,11 @@ def setup_level_3():
     wall.bottom = 5 * wall_size
     level.wall_list.append(wall)
 
+    return level
+
+
+def setup_level_4():
+    level = Level()
     return level
 
 
@@ -226,7 +268,8 @@ class Chapter2View(arcade.View):
         self.levels = [
             setup_level_1(),
             setup_level_2(),
-            setup_level_3()
+            setup_level_3(),
+            setup_level_4()
         ]
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.levels[self.current_level].wall_list)
@@ -243,7 +286,8 @@ class Chapter2View(arcade.View):
             convo.draw()
 
         self.player_list.draw()
-
+        if self.current_level == 3:
+                arcade.draw_text("omfg", settings.WIDTH//2, settings.HEIGHT//2, arcade.color.WHITE, 25)
         for info in self.levels[self.current_level].room_info_list:
             info.draw()
 
@@ -256,6 +300,8 @@ class Chapter2View(arcade.View):
             self.player_sprite.change_x = -movement_speed
         elif key == arcade.key.RIGHT:
             self.player_sprite.change_x = movement_speed
+        elif key == arcade.key.ENTER and self.current_level == 3:
+            self.director.next_view()
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.UP or key == arcade.key.DOWN:
@@ -302,14 +348,11 @@ class Chapter2View(arcade.View):
 
         #next view
         elif self.player_sprite.center_y > settings.HEIGHT and self.current_level == 2:
-            self.director.next_view()
-            #error in sys.excepthook when manually going to next view???
-
+            self.current_level = 3
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         check_mouse_press_for_buttons(x, y, self.levels[self.current_level].dialogue_list)
         check_mouse_press_for_buttons(x, y, self.levels[self.current_level].room_info_list)
-
 
     def on_mouse_release(self, x, y, button, key_modifiers):
         check_mouse_release_for_buttons(x, y, self.levels[self.current_level].dialogue_list)
