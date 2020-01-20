@@ -50,7 +50,7 @@ class Dialogue:
         font_size (int): Size of text.
 
     """
-    def __init__(self, center_x: float, center_y: float, width: float, height: float, text: str, font_size: int=18,
+    def __init__(self, center_x: float, center_y: float, width: float, height: float, text: str, font_size: int=13,
                  font_face: str="Arial", color: str=arcade.color.LIGHT_GRAY):
         self.center_x = center_x
         self.center_y = center_y
@@ -71,7 +71,7 @@ class Dialogue:
         if not self.pressed:
             #draw dialogue prompt
             arcade.draw_rectangle_filled(self.center_x, self.center_y, 20, 20, arcade.color.ALABAMA_CRIMSON)
-            arcade.draw_text("?", self.center_x, self.center_y, arcade.color.BLACK, anchor_x="center", anchor_y="center")
+            arcade.draw_text("!", self.center_x, self.center_y, arcade.color.BLACK, anchor_x="center", anchor_y="center")
         else:
             #draw dialogue box
             arcade.draw_rectangle_filled(self.center_x, self.center_y, self.width, self.height, self.color)
@@ -118,11 +118,7 @@ class RoomInfo:
     def draw(self):
         """Draws question mark for character or dialogue box based on if button is pressed
 
-        Returns:
-            Info promp box with question mark or room info text at top of screen.
         """
-        #automatic empty text box at top of screen
-        arcade.draw_rectangle_filled(settings.WIDTH//2, settings.HEIGHT - 15, settings.WIDTH, 30, arcade.color.ANTIQUE_BRASS)
         if not self.pressed:
             #draw info prompt in room
             arcade.draw_rectangle_filled(self.center_x, self.center_y, 20, 20, arcade.color.ANTIQUE_BRASS)
@@ -191,7 +187,7 @@ class Level:
         self.item_list = arcade.SpriteList()
         self.dialogue_list = []
         self.room_info_list = []
-        #self.background = None
+        self.writing_on_screen = []
 
 
 def setup_level_1() -> object:
@@ -230,12 +226,24 @@ def setup_level_1() -> object:
     #create knight character for level
     create_and_add_character_to_list("pics\prison_guard.png", 0.2, 270, 470, level.character_list)
 
+    #knight asks for bribe
+    guard_convo = Dialogue(300, 500, 150, 50, "I know who you are...\n if you pay me,\n I'll turn a blind eye.")
+    level.dialogue_list.append(guard_convo)
+
     #create coin item to bribe knight character
     create_and_add_item_to_list("pics\gold_1.png", 0.5, 400, 250, level.item_list)
 
     #create prompts and info for rooms for object
-    cell_info = RoomInfo(90, 400, "aaaaaaaaaaaaaaaaaaaaaaah")
-    level.room_info_list.append(cell_info)
+    cell = RoomInfo(120, 100, "Dungeon cell. There's a note and key. Someone's waiting for you in the garden.")
+    level.room_info_list.append(cell)
+    guard_room = RoomInfo(450, 280, "Guardroom. There's the unconconsious bodies of the guards. Your saviours must've gone to great lengths...")
+    level.room_info_list.append(guard_room)
+    torture_chamber = RoomInfo(120, 280, "Torture chamber. You've been here before. They were questioning you, but you didn't answer.")
+    level.room_info_list.append(torture_chamber)
+    battle_room = RoomInfo(650, 280, "Battle room. You see that your captors are fighting revolutionaries- those who seek to bring back a lost king.")
+    level.room_info_list.append(battle_room)
+    stairwell = RoomInfo(220, 520, "Stairwell. There's a lone guard who doesn't look surprised to see you")
+    level.room_info_list.append(stairwell)
 
     return level
 
@@ -285,8 +293,18 @@ def setup_level_2() -> object:
     create_and_add_character_to_list("pics\mystery_figure.png", 0.095, 270, 350, level.character_list)
 
     #create dialogue for mysterious figure character
-    guard_convo = Dialogue(100, 300, 50, 50, "omgf")
-    level.dialogue_list.append(guard_convo)
+    find_disguise_convo = Dialogue(300, 390, 300, 50, "Someone will notice you!\n I've hidden something in the servant's quarters,\n to make you fit in with the nobility.")
+    level.dialogue_list.append(find_disguise_convo)
+
+    #info prompts and text for level
+    balcony = RoomInfo(640, 500, "Balcony. Along with the forest and sea, you can see that a battle is coming.")
+    level.room_info_list.append(balcony)
+    kitchen = RoomInfo(270, 90, "Kitchen. There are plentry of servants around. Your torn clothes are eye-catching, and may sabotage your escape")
+    level.room_info_list.append(kitchen)
+    great_hall = RoomInfo(270, 470, "Great hall. You could have sworn that someone recognized you, but nobody acts to capture you.")
+    level.room_info_list.append(great_hall)
+    sitting_room = RoomInfo(650, 230, "Private sitting room. You find several sketches... sketches that look like a richer, healthier version of you.")
+    level.room_info_list.append(sitting_room)
 
     return level
 
@@ -300,22 +318,47 @@ def setup_level_3() -> object:
     #create level object
     level = Level()
 
-    wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", wall_scaling)
-    wall.left = 7 * wall_size
-    wall.bottom = 5 * wall_size
-    level.wall_list.append(wall)
+    #create vertical walls for level
+    create_and_add_vertical_walls_to_list(4, settings.HEIGHT, 4, level.wall_list)
+    create_and_add_vertical_walls_to_list(0, 4, 23, level.wall_list)
+    create_and_add_vertical_walls_to_list(0, 4, 30, level.wall_list)
+    create_and_add_vertical_walls_to_list(4, 24, 49, level.wall_list)
+    create_and_add_vertical_walls_to_list(24, settings.HEIGHT, 74, level.wall_list)
+
+    #create horizontal walls for level
+    create_and_add_horiontal_walls_to_list(4, 24, 4, level.wall_list) 
+    create_and_add_horiontal_walls_to_list(30, 49, 4, level.wall_list)  
+    create_and_add_horiontal_walls_to_list(4, 19, 24, level.wall_list)
+    create_and_add_horiontal_walls_to_list(34, 74, 24, level.wall_list)
+    
+    #create rebels for level
+    create_and_add_character_to_list("pics\mystery_figure.png", 0.12, 300, 490, level.character_list)
+    create_and_add_character_to_list("pics\prison_guard.png", 0.21, 230, 440, level.character_list)
+    create_and_add_character_to_list("pics\prison_guard.png", 0.21, 370, 440, level.character_list)
+
+    #rebels greet player
+    rebel_1_greet = Dialogue(200, 490, 100, 20, "It's the lost king!")
+    level.dialogue_list.append(rebel_1_greet)
+    rebel_2_greet = Dialogue(400, 490, 130, 40, "We've spent so long\ntrying to free you.")
+    level.dialogue_list.append(rebel_2_greet)
+    rebel_3_greet = Dialogue(300, 540, 150, 40, "You're our only hope,\nkeep going.")
+    level.dialogue_list.append(rebel_3_greet)
 
     return level
 
 
 def setup_level_4() -> object:
-    """Creates empty level for exit chapter screen
+    """Creates level with just text for exit chapter screen
 
     Returns:
-        Level object for Level class, empty level
+        Level object for Level class with only text
     """
     #create level object
     level = Level()
+
+    #outro text for chapter
+    end_of_chapter_text = "You ride along with the rebels to the battlefield, telling you how many people have died for your cause.\nBut the truth is, you are no king - just a prisoner with a lucky face.\n You may not have been who they were looking for, but the truth doesn't matter \n - only what is believed."
+    level.writing_on_screen.append(end_of_chapter_text)
 
     return level
 
@@ -423,9 +466,12 @@ class Chapter2View(arcade.View):
         arcade.set_background_color(arcade.color.AMAZON)
         
     def on_draw(self):
+        """Draws everything
+
+        """
         arcade.start_render()
 
-        #draw lists for most room components
+        #draw lists for room components
         self.levels[self.current_level].wall_list.draw()
         self.levels[self.current_level].character_list.draw()
         self.levels[self.current_level].item_list.draw()
@@ -434,18 +480,25 @@ class Chapter2View(arcade.View):
 
         #draw player
         self.player_list.draw()
-        if self.current_level == 3:
-                arcade.draw_text("omfg", settings.WIDTH//2, settings.HEIGHT//2, arcade.color.WHITE, 25)
 
-        #draw list for room info last so player doesn't go infront
+        #write outro text for end of chapter
+        if self.current_level == 3:
+                arcade.draw_text("     You ride along with the rebels to the battlefield,\n\n and they tell you how many people have died for your cause.\n\nBut the truth is, you are no king - just a prisoner with a lucky face.\n\n You may not have been who they were looking for,\n\nbut the truth doesn't matter - only what is believed.",
+                                 settings.WIDTH//2, settings.HEIGHT//2, arcade.color.WHITE, 20, anchor_x="center", anchor_y="center")
+                arcade.draw_text("Press Enter to continue...", settings.WIDTH/2, 100,
+                         arcade.color.ANTIQUE_RUBY, font_size=20, anchor_x="center")
+
+        #draw empty bar for room info except at chapter end
+        if self.current_level != 3:
+            arcade.draw_rectangle_filled(settings.WIDTH//2, settings.HEIGHT - 15, settings.WIDTH, 30, arcade.color.ANTIQUE_BRASS)
+
+        #draw list for room info last so it can go in front of empty rectangle and player
         for info in self.levels[self.current_level].room_info_list:
             info.draw()
 
     def on_key_press(self, key: arcade.key, modifiers: int):
         """Called when a key is pressed
 
-        Args:
-            key (arcade.key)
         """
         #player movement with keys
         if key == arcade.key.UP:
@@ -462,7 +515,9 @@ class Chapter2View(arcade.View):
             self.director.next_view()
 
     def on_key_release(self, key: arcade.key, modifiers):
+        """Called when a key is released
 
+        """
         #stops sprite movement when key is released
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player_sprite.change_y = 0
@@ -470,18 +525,24 @@ class Chapter2View(arcade.View):
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time: float) -> None:
+        """Movement and game logic
 
+        """
+        #inventory of items "picked up"
         hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.levels[self.current_level].item_list)
         for item in hit_list:
             item.remove_from_sprite_lists()
             self.inventory += 1
 
+        #update player sprite "outfit" is sword item is picked up
         self.player_list.update()
         self.player_list.update_animation(self.inventory)
 
+        #update physics engine for player sprite and walls
         self.physics_engine.update()
 
-        #go up
+        #go to next level
+        #level 2 blocked if coin item is not picked up
         if self.player_sprite.center_y > settings.HEIGHT and self.current_level == 0 and self.inventory >= 1:  
             self.current_level = 1
             self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.levels[self.current_level].wall_list)
@@ -489,6 +550,7 @@ class Chapter2View(arcade.View):
         elif self.player_sprite.center_y > settings.HEIGHT and self.current_level == 0 and self.inventory == 0:  
             self.player_sprite.center_y = settings.HEIGHT
 
+        #level 3 blocked if sword item is not picked up
         elif self.player_sprite.center_y > settings.HEIGHT and self.current_level == 1 and self.inventory >= 2:
             self.current_level = 2
             self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.levels[self.current_level].wall_list)
@@ -496,7 +558,11 @@ class Chapter2View(arcade.View):
         elif self.player_sprite.center_y > settings.HEIGHT and self.current_level == 1 and self.inventory == 1:
             self.player_sprite.center_y = settings.HEIGHT
 
-        #go down
+        #go up to empty level after winning game
+        elif self.player_sprite.center_y > settings.HEIGHT and self.current_level == 2:
+            self.current_level = 3
+
+        #go down levels
         elif self.player_sprite.center_y < 0 and self.current_level == 1:
             self.current_level = 0
             self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.levels[self.current_level].wall_list)
@@ -506,16 +572,24 @@ class Chapter2View(arcade.View):
             self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.levels[self.current_level].wall_list)
             self.player_sprite.center_y = settings.HEIGHT
 
-        #next view
-        elif self.player_sprite.center_y > settings.HEIGHT and self.current_level == 2:
-            self.current_level = 3
+    def on_mouse_press(self, x: float, y: float, button, modifiers):
+        """Called when mouse is clicked
 
-    def on_mouse_press(self, x: float, y: float, button, modifiers) -> None:
+        """
+        #dialogue buttons
         check_mouse_press_for_buttons(x, y, self.levels[self.current_level].dialogue_list)
+
+        #room info prompt buttons
         check_mouse_press_for_buttons(x, y, self.levels[self.current_level].room_info_list)
 
-    def on_mouse_release(self, x: float, y: float, button, modifiers) -> None:
+    def on_mouse_release(self, x: float, y: float, button, modifiers):
+        """Called when mouse is released
+
+        """
+        #dialogue buttons
         check_mouse_release_for_buttons(x, y, self.levels[self.current_level].dialogue_list)
+
+        #room info prompt buttons
         check_mouse_release_for_buttons(x, y, self.levels[self.current_level].room_info_list)
 
 
