@@ -48,67 +48,21 @@ class Dialogue:
         height (float): Height of text box.
         text (str): Dialogue in text box.
         font_size (int): Size of text.
+        font_face (str): font of text.
+        colour (arcade.colour) : colour of dialogue box.
 
     """
     def __init__(self, center_x: float, center_y: float, width: float, height: float, text: str, font_size: int=13,
-                 font: str="Arial", color: str=arcade.color.LIGHT_GRAY):
-        self._center_x = center_x
-        self._center_y = center_y
-        self._width = width
-        self._height = height
-        self._text = text
-        self._font_size = font_size
-        self._font = font
-        self._color = color
+                 font_face: str="Arial", color: str=arcade.color.LIGHT_GRAY):
+        self.center_x = center_x
+        self.center_y = center_y
+        self.width = width
+        self.height = height
+        self.text = text
+        self.font_size = font_size
+        self.font_face = font_face
+        self.color = color
         self.pressed = False
-
-    def get_center_x(self):
-        return(self._center_x)
-
-    def set_center_x(self, value: float):
-        self._center_x = value
-
-    def get_center_y(self):
-        return(self._center_y)
-
-    def set_center_y(self, value: float):
-        self._center_y = value
-
-    def get_width(self):
-        return(self._width)
-
-    def set_width(self, value: float):
-        self._width = value
-
-    def get_height(self):
-        return(self._height)
-
-    def set_height(self, value: float):
-        self._height = value
-
-    def get_text(self):
-        return(self._text)
-
-    def set_text(self, value: str):
-        self._text = value
-
-    def get_font_size(self):
-        return(self._font_size)
-
-    def set_font_size(self, value: int):
-        self._font_size = value
-
-    def get_font(self):
-        return(self._font)
-
-    def set_font(self, value: str):
-        self._font = value
-
-    def get_color(self):
-        return(self._color)
-
-    def set_color(self, value: arcade.color):
-        self._color = value
 
     def draw(self):
         """Draws exclamation point or dialogue box for character based on if button is pressed
@@ -149,10 +103,12 @@ class RoomInfo:
         text (str): All room information
         width (float): Width of info prompt box.
         height (float): Height of info prompt box.
+        font_size (int): size of text.
+        font_face (str): font of text.
 
     """
-    def __init__(self, center_x: float, center_y: float, text: str, width: float=20, height: float=20, font_size: str=18,
-                 font_face: str="Arial", color: str=arcade.color.LIGHT_GRAY):
+    def __init__(self, center_x: float, center_y: float, text: str, width: float=20, height: float=20, font_size: int=18,
+                 font_face: str="Arial"):
         self.center_x = center_x
         self.center_y = center_y
         self.text = text
@@ -161,7 +117,6 @@ class RoomInfo:
         self.font_size = font_size
         self.font_face = font_face
         self.pressed = False
-        self.color = color
     
     def draw(self):
         """Draws question mark for character or dialogue box based on if button is pressed
