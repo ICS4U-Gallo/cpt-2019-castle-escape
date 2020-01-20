@@ -64,7 +64,7 @@ arrow.center_y = -50
 arrow.change_y = 0
 arrow.angle = 225
 arrow.scale = .1
-arrow.points = [[-20, -20], [20, -20], [20, 20], [-20, 20]]
+arrow.points = [[-15, -15], [15, -15], [15, 15], [-15, 15]]
 arrowstate = "ready"
 
 class Chapter3View(arcade.View):
@@ -214,54 +214,85 @@ class Chapter3View(arcade.View):
         shot_seven = arcade.check_for_collision(arrow, prison_guard7)
         shot_eight = arcade.check_for_collision(arrow, prison_guard8)
 
+        guards = 0
+
         if shot_one == True:
             prison_guard.remove_from_sprite_lists()
+            prison_guard.center_x = 900
             arrow.center_y = self.player_sprite.center_y - 150
             arrow.center_x = self.player_sprite.center_x
             arrow.change_y = 0
             arrowstate = "ready"
+            guards += 1
         if shot_two == True:
             prison_guard2.remove_from_sprite_lists()
+            prison_guard2.center_x = 900
             arrow.center_y = self.player_sprite.center_y - 150
             arrow.center_x = self.player_sprite.center_x
             arrow.change_y = 0
             arrowstate = "ready"
+            guards += 1
         if shot_three == True:
             prison_guard3.remove_from_sprite_lists()
+            prison_guard3.center_x = 900
             arrow.center_y = self.player_sprite.center_y - 150
             arrow.center_x = self.player_sprite.center_x
             arrow.change_y = 0
             arrowstate = "ready"
+            guards += 1
         if shot_four == True:
             prison_guard4.remove_from_sprite_lists()
+            prison_guard4.center_x = 900
             arrow.center_y = self.player_sprite.center_y - 150
             arrow.center_x = self.player_sprite.center_x
             arrow.change_y = 0
             arrowstate = "ready"
+            guards += 1
         if shot_five == True:
             prison_guard5.remove_from_sprite_lists()
+            prison_guard5.center_x = 900
             arrow.center_y = self.player_sprite.center_y - 150
             arrow.center_x = self.player_sprite.center_x
             arrow.change_y = 0
             arrowstate = "ready"
+            guards += 1
         if shot_six == True:
             prison_guard6.remove_from_sprite_lists()
+            prison_guard6.center_x = 900
             arrow.center_y = self.player_sprite.center_y - 150
             arrow.center_x = self.player_sprite.center_x
             arrow.change_y = 0
             arrowstate = "ready"
+            guards += 1
         if shot_seven == True:
             prison_guard7.remove_from_sprite_lists()
+            prison_guard7.center_x = 900
             arrow.center_y = self.player_sprite.center_y - 150
             arrow.center_x = self.player_sprite.center_x
             arrow.change_y = 0
             arrowstate = "ready"
+            guards += 1
         if shot_eight == True:
             prison_guard8.remove_from_sprite_lists()
+            prison_guard8.center_x = 900
             arrow.center_y = self.player_sprite.center_y - 150
             arrow.center_x = self.player_sprite.center_x
             arrow.change_y = 0
             arrowstate = "ready"
+            guards += 1
+
+        if guards > 7:
+            prison_guard.remove_from_sprite_lists()
+            prison_guard2.remove_from_sprite_lists()
+            prison_guard3.remove_from_sprite_lists()
+            prison_guard4.remove_from_sprite_lists()
+            prison_guard5.remove_from_sprite_lists()
+            prison_guard6.remove_from_sprite_lists()
+            prison_guard7.remove_from_sprite_lists()
+            prison_guard8.remove_from_sprite_lists()
+            self.player_sprite.remove_from_sprite_lists()
+            arrow.remove_from_sprite_lists()
+            arcade.set_background_color(arcade.color.WHITE)
 
         hit_one = arcade.check_for_collision(self.player_sprite, prison_guard)
         hit_two = arcade.check_for_collision(self.player_sprite, prison_guard2)
